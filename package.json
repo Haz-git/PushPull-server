@@ -4,7 +4,8 @@
   "description": "Backend- or API- (server) facing portion of RankMyRamen",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "pushGit": "git checkout master && git merge dev && git push origin master && git checkout dev"
   },
   "repository": {
     "type": "git",

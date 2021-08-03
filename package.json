@@ -1,12 +1,15 @@
 {
     "name": "rankmyramen-server",
     "version": "1.0.0",
-    "description": "Backend- or API- (server) facing portion of RankMyRamen",
-    "main": "index.js",
+    "description": "Backend- or API- (server) facing portion of RankMyWorkout(name pending)",
+    "main": "dist/server.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
-        "pushGit": "git checkout master && git merge dev && git push origin master && git checkout dev",
-        "build": "tsc --project ./"
+        "build": "rimraf dist && tsc",
+        "preserve": "npm run build",
+        "serve": "cross-env NODE_ENV=development concurrently \"tsc --watch\" \"nodemon -q dist/server.js\"",
+        "prestart": "npm run build",
+        "start": "cross-env NODE_ENV=production node dist/server.js",
+        "test": "echo \"Error: no test specified\" && exit 1"
     },
     "repository": {
         "type": "git",
@@ -20,10 +23,13 @@
     "homepage": "https://github.com/Haz-git/rankmyramen-server#readme",
     "dependencies": {
         "cors": "^2.8.5",
+        "cross-env": "^7.0.3",
         "dotenv": "^10.0.0",
         "express": "^4.17.1",
+        "helmet": "^4.6.0",
         "pg": "^8.6.0",
         "pg-hstore": "^2.3.4",
+        "rimraf": "^3.0.2",
         "sequelize": "^6.6.2"
     },
     "devDependencies": {
@@ -31,9 +37,11 @@
         "@types/node": "^15.12.4",
         "@typescript-eslint/eslint-plugin": "^4.28.0",
         "@typescript-eslint/parser": "^4.28.0",
+        "concurrently": "^6.2.0",
         "eslint": "^7.29.0",
         "eslint-config-prettier": "^8.3.0",
         "eslint-plugin-prettier": "^3.4.0",
+        "nodemon": "^2.0.12",
         "prettier": "^2.3.1",
         "ts-node": "^10.0.0",
         "typescript": "^4.3.4"

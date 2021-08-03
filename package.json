@@ -4,6 +4,7 @@
     "description": "Backend- or API- (server) facing portion of RankMyWorkout(name pending)",
     "main": "dist/server.js",
     "scripts": {
+        "tsc": "tsc",
         "build": "rimraf dist && tsc",
         "preserve": "npm run build",
         "serve": "cross-env NODE_ENV=development concurrently \"tsc --watch\" \"nodemon -q dist/server.js\"",

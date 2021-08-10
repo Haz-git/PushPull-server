@@ -8,7 +8,12 @@ module.exports = {
         host: process.env.DATABASE_HOST,
         port: process.env.DATABASE_PORT,
         dialect: 'postgres',
-        dialectOptions: {},
+        dialectOptions: {
+            ssl: {
+                required: true,
+                rejectUnauthorized: false,
+            },
+        },
         operatorsAliases: false,
         pool: {
             max: 5,
@@ -33,7 +38,7 @@ module.exports = {
         dialect: 'postgres',
         dialectOptions: {
             ssl: {
-                require: true,
+                required: true,
                 rejectUnauthorized: false,
             },
         },

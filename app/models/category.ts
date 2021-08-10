@@ -1,30 +1,39 @@
-// import { DataTypes, Model, Optional } from 'sequelize/types';
-// import { sequelize } from '.';
+'use strict';
 
-// interface CategoryAttributes {
-//     id: string;
-//     categoryName: string;
-// }
+import { Model, UUIDV4 } from 'sequelize';
 
-// interface CategoryCreationAttributes extends Optional<CategoryAttributes, 'id'> {}
+//Interfaces:
+interface CategoryAttributes {
+    id: string;
+    categoryTitle: string;
+}
 
-// interface CategoryInstance extends Model<CategoryAttributes, CategoryCreationAttributes>, CategoryAttributes {
-//     createdAt?: Date;
-//     updatedAt?: Date;
-// }
+module.exports = (sequelize: any, DataTypes: any) => {
+    class Category extends Model<CategoryAttributes> implements CategoryAttributes {
+        public id!: string;
+        public categoryTitle!: string;
 
-// const Category = sequelize.define<CategoryInstance>('Category', {
-//     id: {
-//         allowNull: false,
-//         autoIncrement: false,
-//         primaryKey: true,
-//         type: DataTypes.UUID,
-//         unique: true,
-//     },
-//     categoryName: {
-//         allowNull: false,
-//         type: DataTypes.TEXT,
-//     },
-// });
-
-// export default Category;
+        static associate(models: any) {
+            // define association here
+        }
+    }
+    Category.init(
+        {
+            id: {
+                type: DataTypes.UUID,
+                defaultValue: UUIDV4,
+                allowNull: false,
+                primaryKey: true,
+            },
+            categoryTitle: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
+        },
+        {
+            sequelize,
+            modelName: 'Category',
+        },
+    );
+    return Category;
+};

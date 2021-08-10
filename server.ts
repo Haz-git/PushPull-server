@@ -14,7 +14,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const db = require('./app/models');
-db.sync();
+db.sequelize.sync();
 
 app.get('/', (req: any, res: any) => {
     res.json({ message: 'Hello World!' });

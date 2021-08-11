@@ -2,15 +2,17 @@
 import { Request, Response } from 'express';
 
 //Model:
-const categoryModel = require('../models/category');
+const db = require('../models');
 
 //Utilities:
 const handleAsyncError = require('../utils/handleAsyncErrors');
 
 exports.getAll = handleAsyncError(async (req: Request, res: Response, next: any) => {
+    const allCategories = await db.Category.findAll();
+
     return res.status(200).json({
         status: 'Success',
-        msg: 'Route established',
+        categories: allCategories,
     });
 });
 

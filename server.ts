@@ -1,6 +1,10 @@
 export {};
 
 const express = require('express');
+
+//Router:
+const router = require('./app/routes/index');
+
 require('dotenv').config();
 const cors = require('cors');
 
@@ -22,7 +26,8 @@ app.get('/', (req: any, res: any) => {
 
 const PORT = process.env.PORT || 8080;
 
-//routes
+//routes via router:
+app.use('/api', router);
 
 app.listen(PORT, () => {
     console.log(`Server is running on port: ${PORT}`);

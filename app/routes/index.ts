@@ -16,3 +16,5 @@ router
     .delete('/categories/delete/:id', categoryController.deleteOne);
 
 //Exercise Routes:
+
+module.exports = router;

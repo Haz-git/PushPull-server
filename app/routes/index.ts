@@ -8,11 +8,11 @@ const exerciseController = require('../controllers/exerciseController');
 
 //Category Routes:
 
-// router
-//     .get('/categories/all', categoryController.getAll)
-//     .get('/categories/:id', categoryController.getOne)
-//     .post('/categories/create', categoryController.createOne)
-//     .put('/categories/update/:id', categoryController.updateOne)
-//     .delete('/categories/delete/:id', categoryController.deleteOne);
+router
+    .get('/categories/all', categoryController.getAll)
+    .get('/categories/:id', categoryController.getOne)
+    .post('/categories/create', categoryController.createOne)
+    .put('/categories/update/:id', categoryController.updateOne)
+    .delete('/categories/delete/:id', categoryController.deleteOne);
 
 //Exercise Routes:

@@ -13,6 +13,9 @@ const exRateLimit = require('express-rate-limit');
 const xss = require('xss-clean');
 const hpp = require('hpp');
 
+//AppError:
+import AppError from './app/utils/appError';
+
 //Initiating Express App:
 const app = express();
 
@@ -47,6 +50,17 @@ const PORT = process.env.PORT || 8080;
 
 //routes via router:
 app.use('/api', router);
+
+//Error interface:
+interface ErrorWithStatus extends Error {
+    status: string;
+    statusCode: number;
+}
+
+//Global middleware handler for all routes non-defined:
+app.all('*', (req, res, next) => {
+    next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
+});
 
 app.listen(PORT, () => {
     console.log(`Server is running on port: ${PORT}`);

@@ -46,4 +46,13 @@ exports.createOne = handleAsyncError(async (req: Request, res: Response, next: a
 
 exports.updateOne = handleAsyncError(async (req: Request, res: Response, next: any) => {});
 
-exports.deleteOne = handleAsyncError(async (req: Request, res: Response, next: any) => {});
+exports.deleteOne = handleAsyncError(async (req: Request, res: Response, next: any) => {
+    const removedCategory = await db.Category.destroy({ where: { id: req.params.id } });
+    const allCategories = await db.Category.findAll();
+
+    return res.status(200).json({
+        status: 'Success',
+        removedCategory: removedCategory,
+        categories: allCategories,
+    });
+});

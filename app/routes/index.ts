@@ -4,7 +4,7 @@ const router = express.Router();
 
 //Controllers:
 const categoryController = require('../controllers/categoryController');
-const exerciseController = require('../controllers/exerciseController');
+const workoutProgramController = require('../controllers/workoutProgramController');
 
 //Category Routes:
 
@@ -15,6 +15,13 @@ router
     .put('/categories/update/:id', categoryController.updateOne)
     .delete('/categories/delete/:id', categoryController.deleteOne);
 
-//Exercise Routes:
+//workoutProgram Routes:
+
+router
+    .get('/workoutProgram/all', workoutProgramController.getAll)
+    .get('/workoutProgram/:id', workoutProgramController.getOne)
+    .post('/workoutProgram/create', workoutProgramController.createOne)
+    .put('/workoutProgram/update/:id', workoutProgramController.updateOne)
+    .delete('/workoutProgram/delete/:id', workoutProgramController.deleteOne);
 
 module.exports = router;

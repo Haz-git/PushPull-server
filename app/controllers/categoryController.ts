@@ -44,7 +44,22 @@ exports.createOne = handleAsyncError(async (req: Request, res: Response, next: a
     });
 });
 
-exports.updateOne = handleAsyncError(async (req: Request, res: Response, next: any) => {});
+exports.updateOne = handleAsyncError(async (req: Request, res: Response, next: any) => {
+    const { categoryTitle } = req.body;
+
+    const CATEGORY_MODEL = {
+        categoryTitle: categoryTitle,
+    };
+
+    const updatedCategory = await db.Category.update(CATEGORY_MODEL, { where: { id: req.params.id } });
+    const allCategories = await db.Category.findAll();
+
+    return res.status(200).json({
+        status: 'Success',
+        updatedCategory: updatedCategory,
+        categories: allCategories,
+    });
+});
 
 exports.deleteOne = handleAsyncError(async (req: Request, res: Response, next: any) => {
     const removedCategory = await db.Category.destroy({ where: { id: req.params.id } });

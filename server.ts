@@ -1,21 +1,40 @@
 export {};
 
+//Express:
 const express = require('express');
-
 //Router:
 const router = require('./app/routes/index');
-
 require('dotenv').config();
-const cors = require('cors');
 
+//Security Dependencies:
+const cors = require('cors');
+const helmet = require('helmet');
+const exRateLimit = require('express-rate-limit');
+const xss = require('xss-clean');
+const hpp = require('hpp');
+
+//Initiating Express App:
 const app = express();
+
+app.use(helmet());
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use(xss());
+app.use(hpp());
+
+const rateLimiter = exRateLimit({
+    max: 1000,
+    windowMs: 60 * 60 * 100,
+    message: 'Too many requests from this IP. Please try again later.',
+});
+
+// app.use('/api', rateLimiter);
 
 const corsOptions = {
     origin: 'http://localhost:8081',
 };
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
 const db = require('./app/models');
 db.sequelize.sync();

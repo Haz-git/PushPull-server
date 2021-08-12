@@ -34,11 +34,13 @@ exports.createOne = handleAsyncError(async (req: Request, res: Response, next: a
         categoryTitle: categoryTitle,
     };
 
-    const Categories = await db.Category.create(CATEGORY_MODEL);
+    const addedCategory = await db.Category.create(CATEGORY_MODEL);
+    const allCategories = await db.Category.findAll();
 
     return res.status(200).json({
         status: 'Success',
-        categories: Categories,
+        addedCategory: addedCategory,
+        categories: allCategories,
     });
 });
 

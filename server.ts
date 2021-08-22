@@ -35,9 +35,24 @@ const rateLimiter = exRateLimit({
 
 // app.use('/api', rateLimiter);
 
-const corsOptions = {
-    origin: 'http://localhost:8081',
-};
+const allowedDomains = ['https://rankmyworkout.netlify.app', 'http://localhost:3000'];
+
+app.use(
+    cors({
+        origin: function (origin, callback) {
+            if (!origin) return callback(null, true);
+
+            if (allowedDomains.indexOf(origin) === -1) {
+                const msg = `This site ${origin} does not have access to this server. Only specific domains are allowed.`;
+
+                return callback(new Error(msg), false);
+            }
+
+            return callback(null, true);
+        },
+        credentials: true,
+    }),
+);
 
 const db = require('./app/models');
 db.sequelize.sync();

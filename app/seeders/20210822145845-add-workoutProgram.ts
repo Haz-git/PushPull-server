@@ -25,6 +25,7 @@ module.exports = {
                 createdAt: new Date(),
                 updatedAt: new Date(),
                 CategoryId: `10dc1790-c24d-4421-8aa9-9acd0148be8c`,
+                category: `powerlifting`,
             },
             {
                 id: uuidv4(),
@@ -38,6 +39,7 @@ module.exports = {
                 createdAt: new Date(),
                 updatedAt: new Date(),
                 CategoryId: `10dc1790-c24d-4421-8aa9-9acd0148be8c`,
+                category: `powerlifting`,
             },
             {
                 id: uuidv4(),
@@ -51,6 +53,7 @@ module.exports = {
                 createdAt: new Date(),
                 updatedAt: new Date(),
                 CategoryId: `5417c5da-7ea6-4fd5-a8ea-6df31fda055b`,
+                category: `weightlifting`,
             },
             {
                 id: uuidv4(),
@@ -64,6 +67,7 @@ module.exports = {
                 createdAt: new Date(),
                 updatedAt: new Date(),
                 CategoryId: `a2d1e6b9-cb28-4505-bd96-935b31675f27`,
+                category: `crossfit`,
             },
             {
                 id: uuidv4(),
@@ -77,6 +81,7 @@ module.exports = {
                 createdAt: new Date(),
                 updatedAt: new Date(),
                 CategoryId: `8f0500ee-302b-4f64-b2da-3c1f35100fc9`,
+                category: `bodybuilding`,
             },
         ]);
     },

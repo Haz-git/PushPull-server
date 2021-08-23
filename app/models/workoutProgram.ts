@@ -11,11 +11,13 @@ interface workoutProgramAttributes {
     workoutSchedule: string;
     workoutLength: string;
     rating: number;
+    category: string;
 }
 
 module.exports = (sequelize: any, DataTypes: any) => {
     class workoutProgram extends Model<workoutProgramAttributes> implements workoutProgramAttributes {
         public id!: string;
+        public category!: string;
         public workoutProgramTitle!: string;
         public workoutProgramDesc!: string;
         public equipment!: string;
@@ -36,6 +38,10 @@ module.exports = (sequelize: any, DataTypes: any) => {
                 defaultValue: UUIDV4,
                 allowNull: false,
                 primaryKey: true,
+            },
+            category: {
+                type: DataTypes.STRING,
+                allowNull: false,
             },
             workoutProgramTitle: {
                 type: DataTypes.STRING,

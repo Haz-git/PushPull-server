@@ -3,11 +3,32 @@ import { Request, Response } from 'express';
 
 //Model:
 const db = require('../models');
+const { Op } = require('sequelize');
 
 /* Since we are using the model loader via index.ts (this loader passes all models with sequelize + sequelize.DataTypes)into all of our models, we are importing the database and extracting our specific model via a capitalized key.*/
 
 //Utilities:
 const handleAsyncError = require('../utils/handleAsyncErrors');
+
+exports.findNearby = handleAsyncError(async (req: Request, res: Response, next: any) => {
+    let searchId = req.params.id;
+
+    const searchedWorkoutPrograms = await db.workoutProgram.findAndCountAll({
+        where: {
+            [Op.or]: [
+                { workoutProgramTitle: { [Op.iLike]: `%${searchId}%` } },
+                { workoutProgramDesc: { [Op.iLike]: `%${searchId}%` } },
+            ],
+        },
+        limit: 5,
+        offset: 0,
+    });
+
+    return res.status(200).json({
+        status: 'Success',
+        workoutPrograms: searchedWorkoutPrograms,
+    });
+});
 
 exports.getAll = handleAsyncError(async (req: Request, res: Response, next: any) => {
     const allWorkoutPrograms = await db.workoutProgram.findAll();

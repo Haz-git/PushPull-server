@@ -18,6 +18,7 @@ router
 //workoutProgram Routes:
 
 router
+    .get('/workoutProgram/search/:id', workoutProgramController.findNearby)
     .get('/workoutProgram/all', workoutProgramController.getAll)
     .get('/workoutProgram/:id', workoutProgramController.getOne)
     .post('/workoutProgram/create', workoutProgramController.createOne)

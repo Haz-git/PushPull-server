@@ -12,6 +12,7 @@ const handleAsyncError = require('../utils/handleAsyncErrors');
 
 exports.findNearby = handleAsyncError(async (req: Request, res: Response, next: any) => {
     let searchId = req.params.id;
+    const pageQuery = req.query.page;
 
     const searchedWorkoutPrograms = await db.workoutProgram.findAndCountAll({
         where: {
@@ -20,6 +21,7 @@ exports.findNearby = handleAsyncError(async (req: Request, res: Response, next: 
                 { workoutProgramDesc: { [Op.iLike]: `%${searchId}%` } },
             ],
         },
+        order: [['workoutProgramTitle', 'ASC']],
         limit: 5,
         offset: 0,
     });

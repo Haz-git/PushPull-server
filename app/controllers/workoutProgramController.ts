@@ -24,7 +24,7 @@ exports.findNearby = handleAsyncError(async (req: Request, res: Response, next: 
             },
             order: [['workoutProgramTitle', 'ASC']],
             limit: 10,
-            offset: parseInt(`${pageQuery}`),
+            offset: parseInt(`${pageQuery}`) * 10,
         });
 
         return res.status(200).json({
@@ -40,24 +40,21 @@ exports.findNearby = handleAsyncError(async (req: Request, res: Response, next: 
 });
 
 exports.getAll = handleAsyncError(async (req: Request, res: Response, next: any) => {
-    const pageQuery = req.query.page;
+    let pageQuery = req.query.page;
 
-    if (pageQuery) {
-        const allWorkoutPrograms = await db.workoutProgram.findAndCountAll({
-            order: [['workoutProgramTitle', 'ASC']],
-            limit: 10,
-            offset: parseInt(`${pageQuery}`),
-        });
-
-        return res.status(200).json({
-            status: 'Success',
-            workoutPrograms: allWorkoutPrograms,
-        });
+    if (!pageQuery) {
+        pageQuery = '0';
     }
 
-    return res.status(500).json({
-        status: 'Failure',
-        msg: 'Something went wrong. Please refresh and try again.',
+    const allWorkoutPrograms = await db.workoutProgram.findAndCountAll({
+        order: [['workoutProgramTitle', 'ASC']],
+        limit: 8,
+        offset: parseInt(`${pageQuery}`) * 8,
+    });
+
+    return res.status(200).json({
+        status: 'Success',
+        workoutPrograms: allWorkoutPrograms,
     });
 });
 

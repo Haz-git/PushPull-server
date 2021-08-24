@@ -13,32 +13,51 @@ const handleAsyncError = require('../utils/handleAsyncErrors');
 exports.findNearby = handleAsyncError(async (req: Request, res: Response, next: any) => {
     let searchId = req.params.id;
     const pageQuery = req.query.page;
-    console.log(pageQuery);
 
-    const searchedWorkoutPrograms = await db.workoutProgram.findAndCountAll({
-        where: {
-            [Op.or]: [
-                { workoutProgramTitle: { [Op.iLike]: `%${searchId}%` } },
-                { workoutProgramDesc: { [Op.iLike]: `%${searchId}%` } },
-            ],
-        },
-        order: [['workoutProgramTitle', 'ASC']],
-        limit: 1,
-        offset: parseInt(`${pageQuery}`),
-    });
+    if (pageQuery) {
+        const searchedWorkoutPrograms = await db.workoutProgram.findAndCountAll({
+            where: {
+                [Op.or]: [
+                    { workoutProgramTitle: { [Op.iLike]: `%${searchId}%` } },
+                    { workoutProgramDesc: { [Op.iLike]: `%${searchId}%` } },
+                ],
+            },
+            order: [['workoutProgramTitle', 'ASC']],
+            limit: 10,
+            offset: parseInt(`${pageQuery}`),
+        });
 
-    return res.status(200).json({
-        status: 'Success',
-        workoutPrograms: searchedWorkoutPrograms,
+        return res.status(200).json({
+            status: 'Success',
+            workoutPrograms: searchedWorkoutPrograms,
+        });
+    }
+
+    return res.status(500).json({
+        status: 'Failure',
+        msg: 'Something went wrong. Please refresh and try again.',
     });
 });
 
 exports.getAll = handleAsyncError(async (req: Request, res: Response, next: any) => {
-    const allWorkoutPrograms = await db.workoutProgram.findAll();
+    const pageQuery = req.query.page;
 
-    return res.status(200).json({
-        status: 'Success',
-        workoutPrograms: allWorkoutPrograms,
+    if (pageQuery) {
+        const allWorkoutPrograms = await db.workoutProgram.findAndCountAll({
+            order: [['workoutProgramTitle', 'ASC']],
+            limit: 10,
+            offset: parseInt(`${pageQuery}`),
+        });
+
+        return res.status(200).json({
+            status: 'Success',
+            workoutPrograms: allWorkoutPrograms,
+        });
+    }
+
+    return res.status(500).json({
+        status: 'Failure',
+        msg: 'Something went wrong. Please refresh and try again.',
     });
 });
 

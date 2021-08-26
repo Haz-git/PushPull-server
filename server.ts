@@ -28,10 +28,12 @@ app.use(xss());
 app.use(hpp());
 
 const rateLimiter = exRateLimit({
-    max: 1000,
+    max: 5000,
     windowMs: 60 * 60 * 100,
     message: 'Too many requests from this IP. Please try again later.',
 });
+
+app.use('/api/', rateLimiter);
 
 // app.use('/api', rateLimiter);
 

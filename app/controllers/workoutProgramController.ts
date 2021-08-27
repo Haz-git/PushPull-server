@@ -1,4 +1,5 @@
 //Express Types:
+import { debug } from 'console';
 import { Request, Response } from 'express';
 
 //Model:
@@ -9,22 +10,53 @@ const { Op } = require('sequelize');
 
 //Utilities:
 const handleAsyncError = require('../utils/handleAsyncErrors');
+const parseFilterObject = require('../utils/parseFilterObject');
 
 exports.findNearby = handleAsyncError(async (req: Request, res: Response, next: any) => {
     let searchId = req.params.id;
     let pageQuery = req.query.page;
+    let { filters } = req.body;
+
+    let parsedFilters = parseFilterObject(filters);
 
     if (!pageQuery) {
         pageQuery = '0';
     }
 
-    if (pageQuery) {
-        const searchedWorkoutPrograms = await db.workoutProgram.findAndCountAll({
+    if (pageQuery && filters !== undefined && filters !== null) {
+        let searchedWorkoutPrograms = await db.workoutProgram.findAndCountAll({
             where: {
                 [Op.or]: [
                     { workoutProgramTitle: { [Op.iLike]: `%${searchId}%` } },
                     { workoutProgramDesc: { [Op.iLike]: `%${searchId}%` } },
                 ],
+                [Op.and]: {
+                    category: {
+                        [Op.iLike]: {
+                            [Op.any]: parsedFilters.category,
+                        },
+                    },
+                    difficulty: {
+                        [Op.iLike]: {
+                            [Op.any]: parsedFilters.difficulty,
+                        },
+                    },
+                    equipment: {
+                        [Op.iLike]: {
+                            [Op.any]: parsedFilters.equipment,
+                        },
+                    },
+                    workoutLength: {
+                        [Op.iLike]: {
+                            [Op.any]: parsedFilters.workoutLength,
+                        },
+                    },
+                    workoutSchedule: {
+                        [Op.iLike]: {
+                            [Op.any]: parsedFilters.workoutSchedule,
+                        },
+                    },
+                },
             },
             order: [['workoutProgramTitle', 'ASC']],
             limit: 8,
@@ -45,20 +77,59 @@ exports.findNearby = handleAsyncError(async (req: Request, res: Response, next: 
 
 exports.getAll = handleAsyncError(async (req: Request, res: Response, next: any) => {
     let pageQuery = req.query.page;
+    let { filters } = req.body;
+
+    let parsedFilters = parseFilterObject(filters);
 
     if (!pageQuery) {
         pageQuery = '0';
     }
 
-    const allWorkoutPrograms = await db.workoutProgram.findAndCountAll({
-        order: [['workoutProgramTitle', 'ASC']],
-        limit: 8,
-        offset: parseInt(`${pageQuery}`) * 8,
-    });
+    if (pageQuery && filters !== undefined && filters !== null) {
+        let allWorkoutPrograms = await db.workoutProgram.findAndCountAll({
+            order: [['workoutProgramTitle', 'ASC']],
+            where: {
+                [Op.and]: {
+                    category: {
+                        [Op.iLike]: {
+                            [Op.any]: parsedFilters.category,
+                        },
+                    },
+                    difficulty: {
+                        [Op.iLike]: {
+                            [Op.any]: parsedFilters.difficulty,
+                        },
+                    },
+                    equipment: {
+                        [Op.iLike]: {
+                            [Op.any]: parsedFilters.equipment,
+                        },
+                    },
+                    workoutLength: {
+                        [Op.iLike]: {
+                            [Op.any]: parsedFilters.workoutLength,
+                        },
+                    },
+                    workoutSchedule: {
+                        [Op.iLike]: {
+                            [Op.any]: parsedFilters.workoutSchedule,
+                        },
+                    },
+                },
+            },
+            limit: 8,
+            offset: parseInt(`${pageQuery}`) * 8,
+        });
 
-    return res.status(200).json({
-        status: 'Success',
-        workoutPrograms: allWorkoutPrograms,
+        return res.status(200).json({
+            status: 'Success',
+            workoutPrograms: allWorkoutPrograms,
+        });
+    }
+
+    return res.status(500).json({
+        status: 'Failure',
+        msg: 'Something went wrong. Please refresh and try again.',
     });
 });
 

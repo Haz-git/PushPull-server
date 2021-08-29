@@ -11,6 +11,7 @@ const { Op } = require('sequelize');
 //Utilities:
 const handleAsyncError = require('../utils/handleAsyncErrors');
 const parseFilterObject = require('../utils/parseFilterObject');
+const parseWorkoutProgramSort = require('../utils/parseWorkoutProgramSort');
 
 exports.findNearby = handleAsyncError(async (req: Request, res: Response, next: any) => {
     let searchId = req.params.id;
@@ -18,6 +19,7 @@ exports.findNearby = handleAsyncError(async (req: Request, res: Response, next: 
     let { filters } = req.body;
     let { workoutProgramSort } = req.body;
 
+    let parsedSort = parseWorkoutProgramSort(workoutProgramSort);
     let parsedFilters = parseFilterObject(filters);
 
     if (!pageQuery) {
@@ -59,7 +61,7 @@ exports.findNearby = handleAsyncError(async (req: Request, res: Response, next: 
                     },
                 },
             },
-            order: [['workoutProgramTitle', 'ASC']],
+            order: parsedSort,
             limit: 8,
             offset: parseInt(`${pageQuery}`) * 8,
         });
@@ -79,6 +81,9 @@ exports.findNearby = handleAsyncError(async (req: Request, res: Response, next: 
 exports.getAll = handleAsyncError(async (req: Request, res: Response, next: any) => {
     let pageQuery = req.query.page;
     let { filters } = req.body;
+    let { workoutProgramSort } = req.body;
+
+    let parsedSort = parseWorkoutProgramSort(workoutProgramSort);
 
     let parsedFilters = parseFilterObject(filters);
 
@@ -88,7 +93,6 @@ exports.getAll = handleAsyncError(async (req: Request, res: Response, next: any)
 
     if (pageQuery && filters !== undefined && filters !== null) {
         let allWorkoutPrograms = await db.workoutProgram.findAndCountAll({
-            order: [['workoutProgramTitle', 'ASC']],
             where: {
                 [Op.and]: {
                     category: {
@@ -118,6 +122,7 @@ exports.getAll = handleAsyncError(async (req: Request, res: Response, next: any)
                     },
                 },
             },
+            order: parsedSort,
             limit: 8,
             offset: parseInt(`${pageQuery}`) * 8,
         });

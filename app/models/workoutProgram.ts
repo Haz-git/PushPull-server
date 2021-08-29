@@ -11,6 +11,7 @@ interface workoutProgramAttributes {
     workoutSchedule: string;
     workoutLength: string;
     rating: number;
+    reviews: number;
     category: string;
 }
 
@@ -25,6 +26,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
         public workoutSchedule!: string;
         public workoutLength!: string;
         public rating!: number;
+        public reviews!: number;
 
         static associate(models: any) {
             // define association here
@@ -68,6 +70,10 @@ module.exports = (sequelize: any, DataTypes: any) => {
                 allowNull: false,
             },
             rating: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+            },
+            reviews: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
             },

@@ -26,6 +26,7 @@ module.exports = {
                 updatedAt: new Date(),
                 CategoryId: `10dc1790-c24d-4421-8aa9-9acd0148be8c`,
                 category: `powerlifting`,
+                reviews: 15,
             },
             {
                 id: uuidv4(),
@@ -40,6 +41,7 @@ module.exports = {
                 updatedAt: new Date(),
                 CategoryId: `10dc1790-c24d-4421-8aa9-9acd0148be8c`,
                 category: `powerlifting`,
+                reviews: 21,
             },
             {
                 id: uuidv4(),
@@ -54,6 +56,7 @@ module.exports = {
                 updatedAt: new Date(),
                 CategoryId: `5417c5da-7ea6-4fd5-a8ea-6df31fda055b`,
                 category: `weightlifting`,
+                reviews: 52,
             },
             {
                 id: uuidv4(),
@@ -68,6 +71,7 @@ module.exports = {
                 updatedAt: new Date(),
                 CategoryId: `a2d1e6b9-cb28-4505-bd96-935b31675f27`,
                 category: `crossfit`,
+                reviews: 12,
             },
             {
                 id: uuidv4(),
@@ -82,6 +86,7 @@ module.exports = {
                 updatedAt: new Date(),
                 CategoryId: `8f0500ee-302b-4f64-b2da-3c1f35100fc9`,
                 category: `bodybuilding`,
+                reviews: 5,
             },
             {
                 id: uuidv4(),
@@ -96,6 +101,7 @@ module.exports = {
                 updatedAt: new Date(),
                 CategoryId: `10dc1790-c24d-4421-8aa9-9acd0148be8c`,
                 category: `powerlifting`,
+                reviews: 65,
             },
             {
                 id: uuidv4(),
@@ -110,6 +116,7 @@ module.exports = {
                 updatedAt: new Date(),
                 CategoryId: `10dc1790-c24d-4421-8aa9-9acd0148be8c`,
                 category: `powerlifting`,
+                reviews: 2,
             },
             {
                 id: uuidv4(),
@@ -124,6 +131,7 @@ module.exports = {
                 updatedAt: new Date(),
                 CategoryId: `10dc1790-c24d-4421-8aa9-9acd0148be8c`,
                 category: `powerlifting`,
+                reviews: 23,
             },
             {
                 id: uuidv4(),
@@ -138,6 +146,7 @@ module.exports = {
                 updatedAt: new Date(),
                 CategoryId: `10dc1790-c24d-4421-8aa9-9acd0148be8c`,
                 category: `powerlifting`,
+                reviews: 32,
             },
             {
                 id: uuidv4(),
@@ -152,6 +161,7 @@ module.exports = {
                 updatedAt: new Date(),
                 CategoryId: `10dc1790-c24d-4421-8aa9-9acd0148be8c`,
                 category: `powerlifting`,
+                reviews: 3,
             },
             {
                 id: uuidv4(),
@@ -166,6 +176,7 @@ module.exports = {
                 updatedAt: new Date(),
                 CategoryId: `10dc1790-c24d-4421-8aa9-9acd0148be8c`,
                 category: `powerlifting`,
+                reviews: 75,
             },
             {
                 id: uuidv4(),
@@ -180,6 +191,7 @@ module.exports = {
                 updatedAt: new Date(),
                 CategoryId: `10dc1790-c24d-4421-8aa9-9acd0148be8c`,
                 category: `powerlifting`,
+                reviews: 115,
             },
             {
                 id: uuidv4(),
@@ -194,6 +206,7 @@ module.exports = {
                 updatedAt: new Date(),
                 CategoryId: `10dc1790-c24d-4421-8aa9-9acd0148be8c`,
                 category: `powerlifting`,
+                reviews: 125,
             },
             {
                 id: uuidv4(),
@@ -208,6 +221,7 @@ module.exports = {
                 updatedAt: new Date(),
                 CategoryId: `10dc1790-c24d-4421-8aa9-9acd0148be8c`,
                 category: `powerlifting`,
+                reviews: 45,
             },
         ]);
     },

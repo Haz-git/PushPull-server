@@ -16,6 +16,7 @@ exports.findNearby = handleAsyncError(async (req: Request, res: Response, next: 
     let searchId = req.params.id;
     let pageQuery = req.query.page;
     let { filters } = req.body;
+    let { workoutProgramSort } = req.body;
 
     let parsedFilters = parseFilterObject(filters);
 

@@ -70,7 +70,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
                 allowNull: false,
             },
             rating: {
-                type: DataTypes.INTEGER,
+                type: DataTypes.FLOAT,
                 allowNull: false,
             },
             reviews: {

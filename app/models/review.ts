@@ -28,7 +28,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
         public improvedStats!: any;
         public reviewDesc!: string;
 
-        static associate(models) {
+        static associate(models: any) {
             // define association here
             review.belongsTo(models.workoutProgram);
         }

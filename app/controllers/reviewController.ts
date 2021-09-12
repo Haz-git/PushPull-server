@@ -20,7 +20,7 @@ exports.findReviews = handleAsyncError(async (req: Request, res: Response, next:
             where: {
                 workoutProgramId: parentWorkoutProgramId,
             },
-            order: ['reviewTitle', 'DESC'],
+            order: [['reviewTitle', 'DESC']],
             limit: 8,
             offset: parseInt(`${pageQuery}`) * 8,
         });

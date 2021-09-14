@@ -42,7 +42,7 @@ module.exports = {
                     },
                 }),
                 reviewDesc: `This workout program is unnecessarily hard and complex! I barely understood the exercises and as you can see--I didn't really improve on anything. Don't try this!`,
-                workoutProgramId: `18118a5a-ffea-4968-b85a-0ffef9015c2d`,
+                workoutProgramId: `4df77b8d-c564-4a1c-aecb-0b85b12b401c`,
             },
         ]);
     },

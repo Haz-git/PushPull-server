@@ -36,3 +36,9 @@ exports.findReviews = handleAsyncError(async (req: Request, res: Response, next:
         msg: 'Something went wrong loading reviews. Please refresh and try again',
     });
 });
+
+exports.addReview = handleAsyncError(async (req: Request, res: Response, next: any) => {
+    const { workoutProgramReview } = req.body;
+
+    console.log(workoutProgramReview);
+});

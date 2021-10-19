@@ -27,6 +27,6 @@ router
     .delete('/workoutProgram/delete/:id', workoutProgramController.deleteOne);
 
 //Review Routes:
-router.get('/reviews/all/:id', reviewController.findReviews);
+router.get('/reviews/all/:id', reviewController.findReviews).post('/reviews/submit/:id', reviewController.addReview);
 
 module.exports = router;

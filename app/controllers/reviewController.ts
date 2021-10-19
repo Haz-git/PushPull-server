@@ -40,5 +40,10 @@ exports.findReviews = handleAsyncError(async (req: Request, res: Response, next:
 exports.addReview = handleAsyncError(async (req: Request, res: Response, next: any) => {
     const { workoutProgramReview } = req.body;
 
-    console.log(workoutProgramReview);
+    console.warn(workoutProgramReview);
+
+    return res.status(200).json({
+        status: 'Success',
+        msg: 'Good route',
+    });
 });

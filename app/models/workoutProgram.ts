@@ -13,6 +13,16 @@ interface workoutProgramAttributes {
     rating: number;
     reviews: number;
     category: string;
+    avgAccurateDifficultyRating: number;
+    avgEffectivenessRating: number;
+    avgRepeatableRating: number;
+    avgFollowLength: number;
+    recBegCount: number;
+    recIntCount: number;
+    recAdvCount: number;
+    reviewerBegCount: number;
+    reviewerIntCount: number;
+    reviewerAdvCount: number;
 }
 
 module.exports = (sequelize: any, DataTypes: any) => {
@@ -27,6 +37,17 @@ module.exports = (sequelize: any, DataTypes: any) => {
         public workoutLength!: string;
         public rating!: number;
         public reviews!: number;
+        //New
+        public avgAccurateDifficultyRating!: number;
+        public avgEffectivenessRating!: number;
+        public avgRepeatableRating!: number;
+        public avgFollowLength!: number;
+        public recBegCount!: number;
+        public recIntCount!: number;
+        public recAdvCount!: number;
+        public reviewerBegCount!: number;
+        public reviewerIntCount!: number;
+        public reviewerAdvCount!: number;
 
         static associate(models: any) {
             // define association here
@@ -74,6 +95,46 @@ module.exports = (sequelize: any, DataTypes: any) => {
                 allowNull: false,
             },
             reviews: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+            },
+            avgAccurateDifficultyRating: {
+                type: DataTypes.FLOAT,
+                allowNull: false,
+            },
+            avgEffectivenessRating: {
+                type: DataTypes.FLOAT,
+                allowNull: false,
+            },
+            avgRepeatableRating: {
+                type: DataTypes.FLOAT,
+                allowNull: false,
+            },
+            avgFollowLength: {
+                type: DataTypes.FLOAT,
+                allowNull: false,
+            },
+            recBegCount: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+            },
+            recIntCount: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+            },
+            recAdvCount: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+            },
+            reviewerBegCount: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+            },
+            reviewerIntCount: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+            },
+            reviewerAdvCount: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
             },

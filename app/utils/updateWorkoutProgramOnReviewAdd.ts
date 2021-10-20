@@ -20,8 +20,7 @@ const updateWorkoutProgramOnReviewAdd = (reviewQueryArray: any[]) => {
     const avgRepeatableRating = Math.round((sumRepeatableRating / reviewCount) * 10) / 10;
     const avgEffectiveRating = Math.round((sumEffectiveRating / reviewCount) * 10) / 10;
 
-    const totalScoreAvg =
-        Math.round(((avgAccuracyRating + avgRepeatableRating + avgEffectiveRating) / reviewCount) * 10) / 10;
+    const totalScoreAvg = Math.round(((avgAccuracyRating + avgRepeatableRating + avgEffectiveRating) / 3) * 10) / 10;
 
     //Summing all recommendedLevels and reviewerLevels:
 

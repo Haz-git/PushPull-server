@@ -14,13 +14,14 @@ const updateWorkoutProgramOnReviewAdd = (reviewQueryArray: any[]) => {
 
     const sumFollowLength = totalReviews.map((review) => review.followLength).reduce((a, b) => a + b, 0);
 
-    const avgFollowLength = sumFollowLength / reviewCount;
+    const avgFollowLength = Math.round((sumFollowLength / reviewCount) * 10) / 10;
 
-    const avgAccuracyRating = sumAccuracyRating / reviewCount;
-    const avgRepeatableRating = sumRepeatableRating / reviewCount;
-    const avgEffectiveRating = sumEffectiveRating / reviewCount;
+    const avgAccuracyRating = Math.round((sumAccuracyRating / reviewCount) * 10) / 10;
+    const avgRepeatableRating = Math.round((sumRepeatableRating / reviewCount) * 10) / 10;
+    const avgEffectiveRating = Math.round((sumEffectiveRating / reviewCount) * 10) / 10;
 
-    const totalScoreAvg = (avgAccuracyRating + avgRepeatableRating + avgEffectiveRating) / reviewCount;
+    const totalScoreAvg =
+        Math.round(((avgAccuracyRating + avgRepeatableRating + avgEffectiveRating) / reviewCount) * 10) / 10;
 
     //Summing all recommendedLevels and reviewerLevels:
 

@@ -1,5 +1,6 @@
 //Express Types
 import { Request, Response } from 'express';
+const updateWorkoutProgramOnReviewAdd = require('../utils/updateWorkoutProgramOnReviewAdd');
 
 //Model
 
@@ -25,13 +26,6 @@ exports.findReviews = handleAsyncError(async (req: Request, res: Response, next:
             offset: parseInt(`${pageQuery}`) * 8,
         });
 
-        const results = await db.sequelize.query(
-            `SELECT * FROM public."workoutPrograms" AS workoutPrograms WHERE workoutPrograms.id = '${parentWorkoutProgramId}'`,
-            {
-                raw: true,
-            },
-        );
-
         const reviewsTest = await db.sequelize.query(
             `SELECT * FROM public.reviews AS reviews WHERE reviews."workoutProgramId" = '${parentWorkoutProgramId}'`,
             {
@@ -42,10 +36,12 @@ exports.findReviews = handleAsyncError(async (req: Request, res: Response, next:
             For the life of me I can't figure this out. I'm testing if there's a way to use a raw query to update the workoutProgram associated with the review being added (to update the list of items as described below). However, I'm just trying to input a simple WHERE clause and everything breaks down --> it's saying that the column doesn't exist when it very much does.... figure this out later...
         */
 
+        const testObj = updateWorkoutProgramOnReviewAdd(reviewsTest);
+
         return res.status(200).json({
             status: 'Success',
             reviews: searchedReviews,
-            test: reviewsTest,
+            test: testObj,
         });
     }
 
@@ -73,8 +69,6 @@ exports.addReview = handleAsyncError(async (req: Request, res: Response, next: a
         
         Currently, I think the solution is to use an UDPATE + JOIN, and it still hasn't been supported in sequelize. We'll have to use a raw query.
     */
-
-    const results = await sequelize.query('SELECT * FROM public.reviews');
 
     return res.status(200).json({
         status: 'Success',

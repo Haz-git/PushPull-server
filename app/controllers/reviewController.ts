@@ -66,8 +66,39 @@ exports.addReview = handleAsyncError(async (req: Request, res: Response, next: a
 
     const updatedWorkoutProgramDetails = updateWorkoutProgramOnReviewAdd(totalWorkoutProgramReviews);
 
+    const {
+        avgAccuracyRating,
+        avgEffectiveRating,
+        avgFollowLength,
+        avgRepeatableRating,
+        totalScoreAvg,
+        reviewCount,
+        recommendedLevelGroupData,
+        reviewerLevelGroupData,
+    } = updatedWorkoutProgramDetails;
+
+    //Parsing Group data::
+
+    //Update the parent workoutProgram with new statistics including the new review.
+
+    await db.sequelize.query(
+        `UPDATE public."workoutPrograms" SET "reviews" = ${reviewCount}, "avgAccurateDifficultyRating" = ${avgAccuracyRating}, "avgEffectivenessRating" = ${avgEffectiveRating}, "avgRepeatableRating" = ${avgRepeatableRating}, "avgFollowLength" = ${avgFollowLength}, "rating" = ${totalScoreAvg}, "recBegCount" = ${
+            recommendedLevelGroupData.Beginner ?? 0
+        }, "recIntCount" = ${recommendedLevelGroupData.Intermediate ?? 0}, "recAdvCount" = ${
+            recommendedLevelGroupData.Advanced ?? 0
+        }, "reviewerBegCount" = ${reviewerLevelGroupData.Beginner ?? 0}, "reviewerIntCount" = ${
+            reviewerLevelGroupData.Intermediate ?? 0
+        }, "reviewerAdvCount" = ${reviewerLevelGroupData.Advanced ?? 0} WHERE public."workoutPrograms"."id" = '${
+            workoutProgramReview.workoutProgramId
+        }'`,
+        {
+            raw: true,
+        },
+    );
+
     return res.status(200).json({
         status: 'Success',
         addedReview: addedReview,
+        test: updatedWorkoutProgramDetails,
     });
 });

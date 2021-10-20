@@ -25,13 +25,19 @@ exports.findReviews = handleAsyncError(async (req: Request, res: Response, next:
             offset: parseInt(`${pageQuery}`) * 8,
         });
 
-        // const results = await db.sequelize.query(
-        //     `SELECT * FROM public."workoutPrograms" WHERE public."workoutPrograms"."category" = crossfit`,
-        //     {
-        //         raw: true,
-        //     },
-        // );
+        const results = await db.sequelize.query(
+            `SELECT * FROM public."workoutPrograms" AS workoutPrograms WHERE workoutPrograms.id = '${parentWorkoutProgramId}'`,
+            {
+                raw: true,
+            },
+        );
 
+        const reviewsTest = await db.sequelize.query(
+            `SELECT * FROM public.reviews AS reviews WHERE reviews."workoutProgramId" = '${parentWorkoutProgramId}'`,
+            {
+                raw: true,
+            },
+        );
         /* 
             For the life of me I can't figure this out. I'm testing if there's a way to use a raw query to update the workoutProgram associated with the review being added (to update the list of items as described below). However, I'm just trying to input a simple WHERE clause and everything breaks down --> it's saying that the column doesn't exist when it very much does.... figure this out later...
         */
@@ -39,7 +45,7 @@ exports.findReviews = handleAsyncError(async (req: Request, res: Response, next:
         return res.status(200).json({
             status: 'Success',
             reviews: searchedReviews,
-            // test: results,
+            test: reviewsTest,
         });
     }
 

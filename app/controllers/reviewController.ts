@@ -99,6 +99,5 @@ exports.addReview = handleAsyncError(async (req: Request, res: Response, next: a
     return res.status(200).json({
         status: 'Success',
         addedReview: addedReview,
-        test: updatedWorkoutProgramDetails,
     });
 });

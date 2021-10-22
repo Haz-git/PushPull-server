@@ -13,6 +13,10 @@ interface reviewAttributes {
     followLength: number;
     improvedStats: any; //jsonb datatype
     reviewDesc: string;
+    reviewAuthorId: string;
+    usefulScore: number;
+    notUsefulScore: number;
+    flaggedCount: number;
 }
 
 module.exports = (sequelize: any, DataTypes: any) => {
@@ -27,6 +31,10 @@ module.exports = (sequelize: any, DataTypes: any) => {
         public followLength!: number;
         public improvedStats!: any;
         public reviewDesc!: string;
+        public reviewAuthorId!: string;
+        public usefulScore!: number;
+        public notUsefulScore!: number;
+        public flaggedCount!: number;
 
         static associate(models: any) {
             // define association here
@@ -75,6 +83,22 @@ module.exports = (sequelize: any, DataTypes: any) => {
             },
             reviewDesc: {
                 type: DataTypes.TEXT,
+                allowNull: false,
+            },
+            reviewAuthorId: {
+                type: DataTypes.string,
+                allowNull: false,
+            },
+            usefulScore: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+            },
+            notUsefulScore: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+            },
+            flaggedCount: {
+                type: DataTypes.INTEGER,
                 allowNull: false,
             },
         },

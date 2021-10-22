@@ -101,3 +101,42 @@ exports.addReview = handleAsyncError(async (req: Request, res: Response, next: a
         addedReview: addedReview,
     });
 });
+
+exports.increaseReviewUsefulScore = handleAsyncError(async (req: Request, res: Response, next: any) => {
+    const { reviewRequest } = req.body;
+
+    /*
+        example reviewRequest:
+        {
+            type: string,
+            currScore: number,
+            reviewId: uuid (number)
+        }
+
+    */
+
+    const { type, currScore, reviewId } = reviewRequest;
+
+    if (reviewRequest) {
+        switch (type) {
+            case 'ADD_USEFUL_SCORE':
+                await db.sequelize.query(
+                    `UPDATE public.reviews SET "usefulScore" = ${
+                        currScore + 1
+                    } WHERE public.reviews."id" = '${reviewId}'`,
+                );
+                break;
+            case 'ADD_NOT_USEFUL_SCORE':
+                await db.sequelize.query(
+                    `UPDATE public.reviews SET "notUsefulScore" = ${
+                        currScore + 1
+                    } WHERE public.reviews."id" = '${reviewId}'`,
+                );
+                break;
+            default:
+                throw new Error('Error formatting reviewRequest Object. Please reconfigure and try again.');
+        }
+    }
+});
+
+exports.flagReview = handleAsyncError(async (req: Request, res: Response, next: any) => {});

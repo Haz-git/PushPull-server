@@ -86,7 +86,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
                 allowNull: false,
             },
             reviewAuthorId: {
-                type: DataTypes.string,
+                type: DataTypes.STRING,
                 allowNull: false,
             },
             usefulScore: {

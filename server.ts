@@ -37,7 +37,7 @@ app.use('/api/', rateLimiter);
 
 // app.use('/api', rateLimiter);
 
-const allowedDomains = ['https://gopushpull.com', 'https://pushpull.netlify.app', 'http://localhost:3000'];
+const allowedDomains = ['https://www.gopushpull.com', 'https://www.pushpull.netlify.app', 'http://localhost:3000'];
 
 app.use(
     cors({

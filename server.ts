@@ -37,7 +37,7 @@ app.use('/api/', rateLimiter);
 
 // app.use('/api', rateLimiter);
 
-const allowedDomains = ['https://rankmyworkout.netlify.app', 'http://localhost:3000'];
+const allowedDomains = ['https://gopushpull.com', 'https://rankmyworkout.netlify.app', 'http://localhost:3000'];
 
 app.use(
     cors({

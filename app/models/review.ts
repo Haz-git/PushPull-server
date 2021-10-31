@@ -15,6 +15,7 @@ interface reviewAttributes {
     reviewDesc: string;
     reviewAuthorId: string;
     reviewAuthorName: string;
+    reviewAuthorImg: string;
     usefulScore: number;
     notUsefulScore: number;
     flaggedCount: number;
@@ -34,6 +35,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
         public reviewDesc!: string;
         public reviewAuthorId!: string;
         public reviewAuthorName!: string;
+        public reviewAuthorImg!: string;
         public usefulScore!: number;
         public notUsefulScore!: number;
         public flaggedCount!: number;
@@ -92,6 +94,10 @@ module.exports = (sequelize: any, DataTypes: any) => {
                 allowNull: false,
             },
             reviewAuthorName: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
+            reviewAuthorImg: {
                 type: DataTypes.STRING,
                 allowNull: false,
             },

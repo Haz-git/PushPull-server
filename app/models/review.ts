@@ -14,6 +14,7 @@ interface reviewAttributes {
     improvedStats: any; //jsonb datatype
     reviewDesc: string;
     reviewAuthorId: string;
+    reviewAuthorName: string;
     usefulScore: number;
     notUsefulScore: number;
     flaggedCount: number;
@@ -32,6 +33,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
         public improvedStats!: any;
         public reviewDesc!: string;
         public reviewAuthorId!: string;
+        public reviewAuthorName: string;
         public usefulScore!: number;
         public notUsefulScore!: number;
         public flaggedCount!: number;
@@ -86,6 +88,10 @@ module.exports = (sequelize: any, DataTypes: any) => {
                 allowNull: false,
             },
             reviewAuthorId: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
+            reviewAuthorName: {
                 type: DataTypes.STRING,
                 allowNull: false,
             },

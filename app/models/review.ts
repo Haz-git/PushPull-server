@@ -33,7 +33,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
         public improvedStats!: any;
         public reviewDesc!: string;
         public reviewAuthorId!: string;
-        public reviewAuthorName: string;
+        public reviewAuthorName!: string;
         public usefulScore!: number;
         public notUsefulScore!: number;
         public flaggedCount!: number;

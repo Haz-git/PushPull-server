@@ -11,8 +11,6 @@ const reviewController = require('../controllers/reviewController');
 //Authentication Routes:
 router.get('/user/details', AuthController.authenticateJWT);
 
-//Category Routes:
-
 router
     .get('/categories/all', categoryController.getAll)
     .get('/categories/:id', categoryController.getOne)
@@ -26,7 +24,7 @@ router
     .post('/workoutProgram/search/:id', workoutProgramController.findNearby)
     .post('/workoutProgram/all', workoutProgramController.getAll)
     .get('/workoutProgram/:id', workoutProgramController.getOne)
-    .post('/workoutProgram/create', workoutProgramController.createsOne)
+    .post('/workoutProgram/create', workoutProgramController.createOne)
     .put('/workoutProgram/update/:id', workoutProgramController.updateOne)
     .delete('/workoutProgram/delete/:id', workoutProgramController.deleteOne);
 
@@ -34,6 +32,8 @@ router
 router
     .get('/reviews/all/:id', reviewController.findReviews)
     .post('/reviews/submit/:id', reviewController.addReview)
-    .post('/reviews/update_votes/:id', reviewController.updateReviewVote);
+    .post('/reviews/update_votes/:id', reviewController.updateReviewVotes);
+
+//Category Routes:
 
 module.exports = router;

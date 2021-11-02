@@ -32,7 +32,7 @@ router
 router
     .get('/reviews/all/:id', reviewController.findReviews)
     .post('/reviews/submit/:id', reviewController.addReview)
-    .post('/reviews/update_votes/:id', reviewController.updateReviewVotes);
+    .post('/review/update_votes', reviewController.updateReviewVotes);
 
 //Category Routes:
 

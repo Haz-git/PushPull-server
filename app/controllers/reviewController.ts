@@ -102,8 +102,9 @@ exports.addReview = handleAsyncError(async (req: Request, res: Response, next: a
     });
 });
 
-exports.increaseReviewUsefulScore = handleAsyncError(async (req: Request, res: Response, next: any) => {
+exports.updateReviewVote = handleAsyncError(async (req: Request, res: Response, next: any) => {
     const { reviewRequest } = req.body;
+    let workoutProgramId = req.params.id;
     let pageQuery = req.query.page;
 
     if (!pageQuery) pageQuery = '0';
@@ -118,7 +119,7 @@ exports.increaseReviewUsefulScore = handleAsyncError(async (req: Request, res: R
 
     */
 
-    const { type, currUsefulScore, currNotUsefulScore, reviewId, workoutProgramId } = reviewRequest;
+    const { type, currUsefulScore, currNotUsefulScore, reviewId } = reviewRequest;
 
     if (
         reviewRequest &&

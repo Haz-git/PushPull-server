@@ -104,6 +104,9 @@ exports.addReview = handleAsyncError(async (req: Request, res: Response, next: a
 
 exports.increaseReviewUsefulScore = handleAsyncError(async (req: Request, res: Response, next: any) => {
     const { reviewRequest } = req.body;
+    let pageQuery = req.query.page;
+
+    if (!pageQuery) pageQuery = '0';
 
     /*
         example reviewRequest:
@@ -115,28 +118,83 @@ exports.increaseReviewUsefulScore = handleAsyncError(async (req: Request, res: R
 
     */
 
-    const { type, currScore, reviewId } = reviewRequest;
+    const { type, currUsefulScore, currNotUsefulScore, reviewId, workoutProgramId } = reviewRequest;
 
-    if (reviewRequest) {
+    if (
+        reviewRequest &&
+        type &&
+        currUsefulScore !== undefined &&
+        currNotUsefulScore !== undefined &&
+        reviewId &&
+        workoutProgramId
+    ) {
         switch (type) {
             case 'ADD_USEFUL_SCORE':
                 await db.sequelize.query(
                     `UPDATE public.reviews SET "usefulScore" = ${
-                        currScore + 1
+                        currUsefulScore + 1
+                    } WHERE public.reviews."id" = '${reviewId}'`,
+                );
+                break;
+            case 'REMOVE_USEFUL_SCORE':
+                await db.sequelize.query(
+                    `UPDATE public.reviews SET "usefulScore" = ${
+                        currNotUsefulScore - 1
                     } WHERE public.reviews."id" = '${reviewId}'`,
                 );
                 break;
             case 'ADD_NOT_USEFUL_SCORE':
                 await db.sequelize.query(
                     `UPDATE public.reviews SET "notUsefulScore" = ${
-                        currScore + 1
+                        currUsefulScore + 1
+                    } WHERE public.reviews."id" = '${reviewId}'`,
+                );
+                break;
+            case 'REMOVE_NOT_USEFUL_SCORE':
+                await db.sequelize.query(
+                    `UPDATE public.reviews SET "notUsefulScore" = ${
+                        currNotUsefulScore - 1
+                    } WHERE public.reviews."id" = '${reviewId}'`,
+                );
+                break;
+            case 'SWITCH_FROM_NOT_USEFUL_SCORE':
+                await db.sequelize.query(
+                    `UPDATE public.reviews SET "notUsefulScore" = ${currNotUsefulScore - 1}, "usefulScore" = ${
+                        currUsefulScore + 1
+                    } WHERE public.reviews."id" = '${reviewId}'`,
+                );
+                break;
+            case 'SWITCH_FROM_USEFUL_SCORE':
+                await db.sequelize.query(
+                    `UPDATE public.reviews SET "notUsefulScore" = ${currNotUsefulScore + 1}, "usefulScore" = ${
+                        currUsefulScore - 1
                     } WHERE public.reviews."id" = '${reviewId}'`,
                 );
                 break;
             default:
                 throw new Error('Error formatting reviewRequest Object. Please reconfigure and try again.');
         }
+
+        if (pageQuery && workoutProgramId) {
+            let searchedReviews = await db.review.findAndCountAll({
+                where: {
+                    workoutProgramId: workoutProgramId,
+                },
+                order: [['reviewTitle', 'DESC']],
+                limit: 8,
+                offset: parseInt(`${pageQuery}`) * 8,
+            });
+
+            return res.status(200).json({
+                status: 'Success',
+                reviews: searchedReviews,
+            });
+        }
     }
+    return res.status(500).json({
+        status: 'Failure',
+        msg: 'An error occurred updating review votes.',
+    });
 });
 
 exports.flagReview = handleAsyncError(async (req: Request, res: Response, next: any) => {});

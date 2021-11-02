@@ -114,50 +114,56 @@ exports.updateReviewVotes = handleAsyncError(async (req: Request, res: Response,
         }
 
     */
+    const { type, reviewId } = reviewRequest;
 
-    const { type, currUsefulScore, currNotUsefulScore, reviewId } = reviewRequest;
+    const currReview = await db.review.findOne({ where: { id: `${reviewId}` } });
 
-    if (reviewRequest && type && currUsefulScore !== undefined && currNotUsefulScore !== undefined && reviewId) {
+    if (type && reviewId && currReview) {
+        const {
+            dataValues: { notUsefulScore, usefulScore },
+        } = currReview;
+        console.log(usefulScore, notUsefulScore);
+
         switch (type) {
             case 'ADD_USEFUL_SCORE':
                 await db.sequelize.query(
                     `UPDATE public.reviews SET "usefulScore" = ${
-                        currUsefulScore + 1
+                        usefulScore + 1
                     } WHERE public.reviews."id" = '${reviewId}'`,
                 );
                 break;
             case 'REMOVE_USEFUL_SCORE':
                 await db.sequelize.query(
                     `UPDATE public.reviews SET "usefulScore" = ${
-                        currNotUsefulScore - 1
+                        usefulScore - 1
                     } WHERE public.reviews."id" = '${reviewId}'`,
                 );
                 break;
             case 'ADD_NOT_USEFUL_SCORE':
                 await db.sequelize.query(
                     `UPDATE public.reviews SET "notUsefulScore" = ${
-                        currUsefulScore + 1
+                        notUsefulScore + 1
                     } WHERE public.reviews."id" = '${reviewId}'`,
                 );
                 break;
             case 'REMOVE_NOT_USEFUL_SCORE':
                 await db.sequelize.query(
                     `UPDATE public.reviews SET "notUsefulScore" = ${
-                        currNotUsefulScore - 1
+                        notUsefulScore - 1
                     } WHERE public.reviews."id" = '${reviewId}'`,
                 );
                 break;
             case 'SWITCH_FROM_NOT_USEFUL_SCORE':
                 await db.sequelize.query(
-                    `UPDATE public.reviews SET "notUsefulScore" = ${currNotUsefulScore - 1}, "usefulScore" = ${
-                        currUsefulScore + 1
+                    `UPDATE public.reviews SET "notUsefulScore" = ${notUsefulScore + 1}, "usefulScore" = ${
+                        usefulScore - 1
                     } WHERE public.reviews."id" = '${reviewId}'`,
                 );
                 break;
             case 'SWITCH_FROM_USEFUL_SCORE':
                 await db.sequelize.query(
-                    `UPDATE public.reviews SET "notUsefulScore" = ${currNotUsefulScore + 1}, "usefulScore" = ${
-                        currUsefulScore - 1
+                    `UPDATE public.reviews SET "notUsefulScore" = ${notUsefulScore - 1}, "usefulScore" = ${
+                        usefulScore + 1
                     } WHERE public.reviews."id" = '${reviewId}'`,
                 );
                 break;

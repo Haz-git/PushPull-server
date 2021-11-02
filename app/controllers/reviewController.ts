@@ -104,10 +104,6 @@ exports.addReview = handleAsyncError(async (req: Request, res: Response, next: a
 
 exports.updateReviewVotes = handleAsyncError(async (req: Request, res: Response, next: any) => {
     const { reviewRequest } = req.body;
-    let workoutProgramId = req.params.id;
-    let pageQuery = req.query.page;
-
-    if (!pageQuery) pageQuery = '0';
 
     /*
         example reviewRequest:
@@ -121,14 +117,7 @@ exports.updateReviewVotes = handleAsyncError(async (req: Request, res: Response,
 
     const { type, currUsefulScore, currNotUsefulScore, reviewId } = reviewRequest;
 
-    if (
-        reviewRequest &&
-        type &&
-        currUsefulScore !== undefined &&
-        currNotUsefulScore !== undefined &&
-        reviewId &&
-        workoutProgramId
-    ) {
+    if (reviewRequest && type && currUsefulScore !== undefined && currNotUsefulScore !== undefined && reviewId) {
         switch (type) {
             case 'ADD_USEFUL_SCORE':
                 await db.sequelize.query(
@@ -176,21 +165,9 @@ exports.updateReviewVotes = handleAsyncError(async (req: Request, res: Response,
                 throw new Error('Error formatting reviewRequest Object. Please reconfigure and try again.');
         }
 
-        if (pageQuery && workoutProgramId) {
-            let searchedReviews = await db.review.findAndCountAll({
-                where: {
-                    workoutProgramId: workoutProgramId,
-                },
-                order: [['reviewTitle', 'DESC']],
-                limit: 8,
-                offset: parseInt(`${pageQuery}`) * 8,
-            });
-
-            return res.status(200).json({
-                status: 'Success',
-                reviews: searchedReviews,
-            });
-        }
+        return res.status(200).json({
+            status: 'Success',
+        });
     }
 
     return res.status(500).json({

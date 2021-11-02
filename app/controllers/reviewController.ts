@@ -102,7 +102,7 @@ exports.addReview = handleAsyncError(async (req: Request, res: Response, next: a
     });
 });
 
-exports.updateReviewVote = handleAsyncError(async (req: Request, res: Response, next: any) => {
+exports.updateReviewVotes = handleAsyncError(async (req: Request, res: Response, next: any) => {
     const { reviewRequest } = req.body;
     let workoutProgramId = req.params.id;
     let pageQuery = req.query.page;
@@ -192,6 +192,7 @@ exports.updateReviewVote = handleAsyncError(async (req: Request, res: Response, 
             });
         }
     }
+
     return res.status(500).json({
         status: 'Failure',
         msg: 'An error occurred updating review votes.',

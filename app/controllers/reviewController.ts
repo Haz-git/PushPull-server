@@ -13,6 +13,7 @@ const handleAsyncError = require('../utils/handleAsyncErrors');
 exports.findReviews = handleAsyncError(async (req: Request, res: Response, next: any) => {
     let parentWorkoutProgramId = req.params.id;
     let pageQuery = req.query.page;
+    let reviewSort = req.query.sort;
 
     if (!pageQuery) pageQuery = '0';
 
@@ -21,7 +22,7 @@ exports.findReviews = handleAsyncError(async (req: Request, res: Response, next:
             where: {
                 workoutProgramId: parentWorkoutProgramId,
             },
-            order: [['reviewTitle', 'DESC']],
+            order: [[`${reviewSort}`, 'DESC']],
             limit: 8,
             offset: parseInt(`${pageQuery}`) * 8,
         });

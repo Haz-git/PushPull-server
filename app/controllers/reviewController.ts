@@ -23,8 +23,8 @@ exports.findReviews = handleAsyncError(async (req: Request, res: Response, next:
                 workoutProgramId: parentWorkoutProgramId,
             },
             order: [[`${reviewSort}`, 'DESC']],
-            limit: 8,
-            offset: parseInt(`${pageQuery}`) * 8,
+            limit: 5,
+            offset: parseInt(`${pageQuery}`) * 5,
         });
 
         return res.status(200).json({
@@ -123,7 +123,6 @@ exports.updateReviewVotes = handleAsyncError(async (req: Request, res: Response,
         const {
             dataValues: { notUsefulScore, usefulScore },
         } = currReview;
-        console.log(usefulScore, notUsefulScore);
 
         switch (type) {
             case 'ADD_USEFUL_SCORE':

@@ -20,7 +20,7 @@ exports.findUser = handleAsyncError(async (req: Request, res: Response, next: an
                             {
                                 attr: 'username',
                                 type: 'string',
-                                comparison: 'contains',
+                                comparison: 'is',
                                 value: `${username}`,
                             },
                         ],
@@ -33,7 +33,7 @@ exports.findUser = handleAsyncError(async (req: Request, res: Response, next: an
 
         return res.status(200).json({
             status: 'Success',
-            userProfile: response,
+            userProfile: response.data.results[0],
         });
     }
 

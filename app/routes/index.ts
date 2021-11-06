@@ -7,6 +7,7 @@ const AuthController = require('../controllers/authController');
 const categoryController = require('../controllers/categoryController');
 const workoutProgramController = require('../controllers/workoutProgramController');
 const reviewController = require('../controllers/reviewController');
+const profileController = require('../controllers/profileController');
 
 //Authentication Routes:
 router.get('/user/details', AuthController.authenticateJWT);
@@ -34,6 +35,7 @@ router
     .post('/reviews/submit/:id', reviewController.addReview)
     .post('/review/update_votes', reviewController.updateReviewVotes);
 
-//Category Routes:
+//Profile Routes:
+router.get('/user/:username', profileController.findUser);
 
 module.exports = router;

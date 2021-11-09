@@ -38,6 +38,6 @@ router
 //Profile Routes:
 router
     .get('/user/:username', profileController.findUser)
-    .post('/user/update/:username', AuthController.authenticateJWT, profileController.updateUser);
+    .post('/user/update', AuthController.authenticateJWT, profileController.updateUser);
 
 module.exports = router;

@@ -36,6 +36,8 @@ router
     .post('/review/update_votes', reviewController.updateReviewVotes);
 
 //Profile Routes:
-router.get('/user/:username', profileController.findUser);
+router
+    .get('/user/:username', profileController.findUser)
+    .post('/user/update/:username', AuthController.authenticateJWT, profileController.updateUser);
 
 module.exports = router;

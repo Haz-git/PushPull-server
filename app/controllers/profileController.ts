@@ -43,6 +43,33 @@ exports.findUser = handleAsyncError(async (req: Request, res: Response, next: an
     });
 });
 
-exports.updateUser = handleAsyncError(async (req: Request, res: Response, next: any) => {
-    console.log('test');
+exports.updateUser = handleAsyncError(async (req: any, res: Response, next: any) => {
+    const { updateObject } = req.body;
+    const { userId } = req.auth;
+
+    if (updateObject && userId) {
+        const { newName, newBio, newLocation, newWebsite, newTwitter } = updateObject;
+
+        const payload = {
+            name: newName,
+            data: {
+                userBio: newBio,
+                location: newLocation,
+                website: newWebsite,
+                twitter: newTwitter,
+            },
+        };
+
+        let response = await userfrontApi.put(`/v0/users/${userId}`, payload);
+
+        return res.status(200).json({
+            status: 'Success',
+            userProfile: response.data,
+        });
+    }
+
+    return res.status(500).json({
+        status: 'Failure',
+        msg: 'User could not be updated',
+    });
 });

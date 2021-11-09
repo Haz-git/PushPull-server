@@ -42,3 +42,7 @@ exports.findUser = handleAsyncError(async (req: Request, res: Response, next: an
         msg: 'User could not be found',
     });
 });
+
+exports.updateUser = handleAsyncError(async (req: Request, res: Response, next: any) => {
+    console.log('test');
+});

@@ -12,7 +12,8 @@
         "testStart": "cross-env NODE_ENV=development node dist/server.js",
         "start": "cross-env NODE_ENV=production node dist/server.js",
         "test": "echo \"Error: no test specified\" && exit 1",
-        "pushGit": "git checkout master && git merge dev && git push origin master && git checkout dev"
+        "pushGit": "git checkout master && git merge dev && git push origin master && git checkout dev",
+        "gitUpdate": "git pull && git checkout master && git pull && git checkout dev"
     },
     "repository": {
         "type": "git",

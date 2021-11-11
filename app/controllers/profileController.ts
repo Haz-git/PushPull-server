@@ -31,6 +31,14 @@ exports.findUser = handleAsyncError(async (req: Request, res: Response, next: an
 
         let response = await userfrontApi.post('/v0/users/find', payload);
 
+        if (response && response?.data?.totalCount === 0) {
+            return res.status(200).json({
+                status: 'Failure',
+                msg: 'User not found',
+                userProfile: 0,
+            });
+        }
+
         return res.status(200).json({
             status: 'Success',
             userProfile: response.data.results[0],

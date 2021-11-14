@@ -1,7 +1,15 @@
 import { Request, Response } from 'express';
+const ImageKit = require('imagekit');
 
-//api:
+//USERFRONT API:
 const userfrontApi = require('../api/userfrontApi');
+
+//IMAGEKIT SDK:
+const imagekit = new ImageKit({
+    publicKey: process.env.IMAGEKIT_PUBLIC_KEY,
+    privateKey: process.env.IMAGEKIT_PRIVATE_KEY,
+    urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT,
+});
 
 //Utils:
 const handleAsyncError = require('../utils/handleAsyncErrors');
@@ -85,6 +93,8 @@ exports.updateUser = handleAsyncError(async (req: any, res: Response, next: any)
 exports.updateUserAvatar = handleAsyncError(async (req: any, res: Response, next: any) => {
     const { avatarObject } = req.body;
     const { userId } = req.auth;
+
+    console.log(avatarObject);
 
     return res.status(200).json({
         msg: 'test',

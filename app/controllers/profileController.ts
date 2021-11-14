@@ -66,22 +66,30 @@ exports.updateUser = handleAsyncError(async (req: any, res: Response, next: any)
     if (updateObject && userId) {
         const { newName, newBio, newLocation, newWebsite, newTwitter } = updateObject;
 
-        const payload = {
-            name: newName,
-            data: {
-                userBio: newBio,
-                location: newLocation,
-                website: newWebsite,
-                twitter: newTwitter,
-            },
-        };
+        let currUser = await userfrontApi.get(`/v0/users/${userId}`);
 
-        let response = await userfrontApi.put(`/v0/users/${userId}`, payload);
+        if (currUser) {
+            console.log(currUser);
 
-        return res.status(200).json({
-            status: 'Success',
-            userProfile: response.data,
-        });
+            currUser.data.data.userBio = newBio;
+            currUser.data.data.location = newLocation;
+            currUser.data.data.website = newWebsite;
+            currUser.data.data.twitter = newTwitter;
+
+            console.log(currUser);
+
+            const payload = {
+                name: newName,
+                data: currUser.data,
+            };
+
+            let response = await userfrontApi.put(`/v0/users/${userId}`, payload);
+
+            return res.status(200).json({
+                status: 'Success',
+                userProfile: response.data,
+            });
+        }
     }
 
     return res.status(500).json({
@@ -94,9 +102,38 @@ exports.updateUserAvatar = handleAsyncError(async (req: any, res: Response, next
     const { avatarObject } = req.body;
     const { userId } = req.auth;
 
-    console.log(avatarObject);
+    const { file, fileName } = avatarObject || {};
 
-    return res.status(200).json({
-        msg: 'test',
+    if (file && fileName) {
+        let imageKitResult = await imagekit.upload({
+            file: file, //required
+            fileName: fileName, //required
+            extensions: [
+                {
+                    name: 'google-auto-tagging',
+                    maxTags: 5,
+                    minConfidence: 95,
+                },
+            ],
+        });
+
+        if (imageKitResult) {
+            let response = await userfrontApi.put(`/v0/users/${userId}`, {
+                image: imageKitResult.url,
+                data: {
+                    imageKitAvatarDetails: imageKitResult,
+                },
+            });
+
+            return res.status(200).json({
+                status: 'Success',
+                userProfile: response.data,
+            });
+        }
+    }
+
+    return res.status(500).json({
+        status: 'Failure',
+        msg: 'User avatar could not be updated',
     });
 });

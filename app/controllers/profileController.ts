@@ -81,3 +81,12 @@ exports.updateUser = handleAsyncError(async (req: any, res: Response, next: any)
         msg: 'User could not be updated',
     });
 });
+
+exports.updateUserAvatar = handleAsyncError(async (req: any, res: Response, next: any) => {
+    const { avatarObject } = req.body;
+    const { userId } = req.auth;
+
+    return res.status(200).json({
+        msg: 'test',
+    });
+});

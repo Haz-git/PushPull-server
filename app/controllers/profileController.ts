@@ -164,8 +164,10 @@ exports.updateUserReviewVotes = handleAsyncError(async (req: any, res: Response,
                 break;
             case 'DELETE':
                 delete newReviewObject[reviewId];
+                break;
             case 'UPDATE':
                 newReviewObject[reviewId] = reviewVote;
+                break;
             default:
                 throw new Error('No review task was specified');
         }

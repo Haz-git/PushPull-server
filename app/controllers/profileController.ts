@@ -69,7 +69,7 @@ exports.updateUser = handleAsyncError(async (req: any, res: Response, next: any)
         let currUser = await userfrontApi.get(`/v0/users/${userId}`);
 
         if (currUser) {
-            const currDataObject = currUser?.data?.data?.data;
+            const currDataObject = currUser?.data?.data;
 
             currDataObject.userBio = newBio;
             currDataObject.location = newLocation;
@@ -116,17 +116,26 @@ exports.updateUserAvatar = handleAsyncError(async (req: any, res: Response, next
         });
 
         if (imageKitResult) {
-            let response = await userfrontApi.put(`/v0/users/${userId}`, {
-                image: imageKitResult.url,
-                data: {
-                    imageKitAvatarDetails: imageKitResult,
-                },
-            });
+            let currUser = await userfrontApi.get(`/v0/users/${userId}`);
+            const { url } = imageKitResult;
+            if (currUser) {
+                const currDataObject = currUser?.data?.data;
 
-            return res.status(200).json({
-                status: 'Success',
-                userProfile: response.data,
-            });
+                currDataObject.imageKitAvatarDetails = imageKitResult;
+                //Logical nullish assignment, if imageKitAvatarDetails is undefined, it is created and assigned to imageKitResult.
+
+                const payload = {
+                    image: url,
+                    data: currDataObject,
+                };
+
+                let response = await userfrontApi.put(`/v0/users/${userId}`, payload);
+
+                return res.status(200).json({
+                    status: 'Success',
+                    userProfile: response.data,
+                });
+            }
         }
     }
 
@@ -134,4 +143,44 @@ exports.updateUserAvatar = handleAsyncError(async (req: any, res: Response, next
         status: 'Failure',
         msg: 'User avatar could not be updated',
     });
+});
+
+exports.updateUserReviewVotes = handleAsyncError(async (req: any, res: Response, next: any) => {
+    const { userId } = req.auth;
+    const { reviewObject } = req.body;
+
+    const { reviewId, reviewTask, reviewVote } = reviewObject;
+
+    if (reviewId && reviewTask && reviewVote) {
+        let currUser = await userfrontApi.get(`/v0/users/${userId}`);
+
+        const currDataObject = currUser?.data?.data;
+
+        let newReviewObject = currDataObject.reviewsVoted;
+
+        switch (reviewTask) {
+            case 'ADD':
+                newReviewObject[reviewId] = reviewVote;
+                break;
+            case 'DELETE':
+                delete newReviewObject[reviewId];
+            case 'UPDATE':
+                newReviewObject[reviewId] = reviewVote;
+            default:
+                throw new Error('No review task was specified');
+        }
+
+        currDataObject.reviewsVoted = newReviewObject;
+
+        const payload = {
+            data: currDataObject,
+        };
+
+        let response = await userfrontApi.put(`/v0/users/${userId}`, payload);
+
+        return res.status(200).json({
+            status: 'Success',
+            userDetails: response.data,
+        });
+    }
 });

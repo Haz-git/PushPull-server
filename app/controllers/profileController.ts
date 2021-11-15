@@ -69,18 +69,16 @@ exports.updateUser = handleAsyncError(async (req: any, res: Response, next: any)
         let currUser = await userfrontApi.get(`/v0/users/${userId}`);
 
         if (currUser) {
-            console.log(currUser);
+            const currDataObject = currUser?.data?.data?.data;
 
-            currUser.data.data.userBio = newBio;
-            currUser.data.data.location = newLocation;
-            currUser.data.data.website = newWebsite;
-            currUser.data.data.twitter = newTwitter;
-
-            console.log(currUser);
+            currDataObject.userBio = newBio;
+            currDataObject.location = newLocation;
+            currDataObject.website = newWebsite;
+            currDataObject.twitter = newTwitter;
 
             const payload = {
                 name: newName,
-                data: currUser.data,
+                data: currDataObject,
             };
 
             let response = await userfrontApi.put(`/v0/users/${userId}`, payload);

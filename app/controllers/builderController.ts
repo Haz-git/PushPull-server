@@ -15,11 +15,36 @@ exports.findUserBuilderInfo = handleAsyncError(async (req: any, res: Response, n
         if (currUser) {
             const { builder } = currUser?.data?.data;
 
+            console.log(builder);
+
             if (builder) {
                 return res.status(200).json({
                     status: 'Success',
                     builder: builder,
                 });
+            } else {
+                //builder is undefined, this account doesn't have builder (old account) -> we'll update.
+                let currDataObject = currUser?.data?.data;
+                currDataObject.builder = {
+                    projects: [],
+                };
+                const payload = {
+                    data: currDataObject,
+                };
+
+                let response = await userfrontApi.put(`/v0/users/${userId}`, payload);
+
+                let updatedUser = await userfrontApi.get(`/v0/users/${userId}`);
+
+                const { builder } = updatedUser?.data?.data;
+
+                if (builder) {
+                    return res.status(200).json({
+                        status: 'Success',
+                        msg: 'Builder was not found in user data. Builder has been created.',
+                        builder: builder,
+                    });
+                }
             }
         }
     }

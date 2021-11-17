@@ -126,10 +126,9 @@ exports.updateUserAvatar = handleAsyncError(async (req: any, res: Response, next
             let currUser = await userfrontApi.get(`/v0/users/${userId}`);
             const { url } = imageKitResult;
             if (currUser) {
-                const currDataObject = currUser?.data?.data;
+                let currDataObject = currUser?.data?.data;
 
                 currDataObject.imageKitAvatarDetails = imageKitResult;
-                //Logical nullish assignment, if imageKitAvatarDetails is undefined, it is created and assigned to imageKitResult.
 
                 const payload = {
                     image: url,

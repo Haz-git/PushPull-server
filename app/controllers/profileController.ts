@@ -100,7 +100,7 @@ exports.updateUserAvatar = handleAsyncError(async (req: any, res: Response, next
     const { avatarObject } = req.body;
     const { userId } = req.auth;
 
-    const { file, fileName } = avatarObject || {};
+    const { file, fileName, previousAvatarId } = avatarObject || {};
 
     if (file && fileName) {
         let imageKitResult = await imagekit.upload({
@@ -114,6 +114,13 @@ exports.updateUserAvatar = handleAsyncError(async (req: any, res: Response, next
                 },
             ],
         });
+
+        if (previousAvatarId) {
+            await imagekit.deleteFile(previousAvatarId, (error, result) => {
+                if (error) console.log(error);
+                else console.log('Previous avatar deleted successfully.');
+            });
+        }
 
         if (imageKitResult) {
             let currUser = await userfrontApi.get(`/v0/users/${userId}`);

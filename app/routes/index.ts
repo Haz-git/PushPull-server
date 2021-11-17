@@ -8,6 +8,7 @@ const categoryController = require('../controllers/categoryController');
 const workoutProgramController = require('../controllers/workoutProgramController');
 const reviewController = require('../controllers/reviewController');
 const profileController = require('../controllers/profileController');
+const builderController = require('../controllers/builderController');
 
 //Authentication Routes:
 router.get('/user/details', AuthController.authenticateJWT);
@@ -41,5 +42,12 @@ router
     .post('/user/details/update', AuthController.authenticateJWT, profileController.updateUser)
     .post('/user/avatar/update', AuthController.authenticateJWT, profileController.updateUserAvatar)
     .post('/user/review/update', AuthController.authenticateJWT, profileController.updateUserReviewVotes);
+
+//Builder Routes: Separate builder routes, but just expands through profile controller because builder information is stored in data object of user in userfront.
+router
+    .get('/builder/user/:userId', AuthController.authenticateJWT, builderController.findUserBuilderInfo)
+    .post('/builder/project/add', AuthController.authenticateJWT, builderController.addProject)
+    .put('/builder/project/update', AuthController.authenticateJWT, builderController.updateProject)
+    .delete('builder/project/delete/:projectId', AuthController.authenticateJWT, builderController.deleteProject);
 
 module.exports = router;

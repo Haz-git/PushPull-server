@@ -31,13 +31,9 @@ exports.findUserBuilderInfo = handleAsyncError(async (req: any, res: Response, n
                 const payload = {
                     data: currDataObject,
                 };
-
                 let response = await userfrontApi.put(`/v0/users/${userId}`, payload);
-
                 let updatedUser = await userfrontApi.get(`/v0/users/${userId}`);
-
                 const { builder } = updatedUser?.data?.data;
-
                 if (builder) {
                     return res.status(200).json({
                         status: 'Success',
@@ -55,7 +51,23 @@ exports.findUserBuilderInfo = handleAsyncError(async (req: any, res: Response, n
     });
 });
 
-exports.addProject = handleAsyncError(async (req: any, res: Response, next: any) => {});
+exports.addProject = handleAsyncError(async (req: any, res: Response, next: any) => {
+    const { userId } = req.auth;
+    const { projectDetails } = req.body;
+
+    let projectBody = { ...projectDetails };
+
+    projectBody.createdBy = { userfrontUserId: userId, createdDate: new Date() };
+    projectBody.updatedDate = new Date();
+    projectBody.projectMembers = [{ userId: userId, mode: 'EDIT' }];
+    projectBody.projectColorHex = Math.floor(Math.random() * 16777215).toString(16);
+    projectBody.projectTemplates = [];
+
+    return res.status(200).json({
+        status: 'Test',
+        msg: projectBody,
+    });
+});
 
 exports.updateProject = handleAsyncError(async (req: any, res: Response, next: any) => {});
 

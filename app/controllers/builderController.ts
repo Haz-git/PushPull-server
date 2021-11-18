@@ -15,8 +15,6 @@ exports.findUserBuilderInfo = handleAsyncError(async (req: any, res: Response, n
         if (currUser) {
             const { builder } = currUser?.data?.data;
 
-            console.log(builder);
-
             if (builder) {
                 return res.status(200).json({
                     status: 'Success',
@@ -56,16 +54,42 @@ exports.addProject = handleAsyncError(async (req: any, res: Response, next: any)
     const { projectDetails } = req.body;
 
     let projectBody = { ...projectDetails };
+    let currUser = await userfrontApi.get(`/v0/users/${userId}`);
+    let currDataObject = currUser?.data?.data;
 
-    projectBody.createdBy = { userfrontUserId: userId, createdDate: new Date() };
-    projectBody.updatedDate = new Date();
-    projectBody.projectMembers = [{ userId: userId, mode: 'EDIT' }];
-    projectBody.projectColorHex = Math.floor(Math.random() * 16777215).toString(16);
-    projectBody.projectTemplates = [];
+    if (currDataObject) {
+        projectBody.createdBy = { userfrontUserId: userId, createdDate: new Date() };
+        projectBody.updatedDate = new Date();
+        projectBody.projectMembers = [{ userfrontUserId: userId, mode: 'EDIT' }];
+        projectBody.projectColorHex = Math.floor(Math.random() * 16777215).toString(16);
+        projectBody.projectTemplates = [];
 
-    return res.status(200).json({
-        status: 'Test',
-        msg: projectBody,
+        currDataObject.builder.projects.push(projectBody);
+
+        const payload = {
+            data: currDataObject,
+        };
+        let response = await userfrontApi.put(`/v0/users/${userId}`, payload);
+        let updatedUser = await userfrontApi.get(`/v0/users/${userId}`);
+
+        if (response && updatedUser) {
+            const { builder } = updatedUser?.data?.data;
+
+            return res.status(200).json({
+                status: 'Success',
+                builder: builder,
+            });
+        }
+
+        return res.status(500).json({
+            status: 'Failed',
+            msg: 'Something went wrong updating userfront data object.',
+        });
+    }
+
+    return res.status(500).json({
+        status: 'Failed',
+        msg: 'An error occurred retrieving user data object',
     });
 });
 

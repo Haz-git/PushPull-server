@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+const { v4: uuid } = require('uuid');
 
 //USERFRONT API:
 const userfrontApi = require('../api/userfrontApi');
@@ -58,6 +59,7 @@ exports.addProject = handleAsyncError(async (req: any, res: Response, next: any)
     let currDataObject = currUser?.data?.data;
 
     if (currDataObject) {
+        projectBody.projectUuid = uuid();
         projectBody.createdBy = {
             userfrontUserId: userId,
             createdDate: new Date(),

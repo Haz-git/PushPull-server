@@ -58,7 +58,12 @@ exports.addProject = handleAsyncError(async (req: any, res: Response, next: any)
     let currDataObject = currUser?.data?.data;
 
     if (currDataObject) {
-        projectBody.createdBy = { userfrontUserId: userId, createdDate: new Date() };
+        projectBody.createdBy = {
+            userfrontUserId: userId,
+            createdDate: new Date(),
+            username: currUser.username,
+            userImage: currUser.image,
+        };
         projectBody.updatedDate = new Date();
         projectBody.projectMembers = [{ userfrontUserId: userId, mode: 'EDIT' }];
         projectBody.projectColorHex = Math.floor(Math.random() * 16777215).toString(16);

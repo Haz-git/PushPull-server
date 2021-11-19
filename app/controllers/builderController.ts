@@ -68,7 +68,6 @@ exports.addProject = handleAsyncError(async (req: any, res: Response, next: any)
         };
         projectBody.updatedDate = new Date();
         projectBody.projectMembers = [{ userfrontUserId: userId, mode: 'EDIT' }];
-        projectBody.projectColorHex = Math.floor(Math.random() * 16777215).toString(16);
         projectBody.projectTemplates = [];
 
         currDataObject.builder.projects.push(projectBody);

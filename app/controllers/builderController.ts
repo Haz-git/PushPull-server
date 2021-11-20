@@ -102,5 +102,40 @@ exports.addProject = handleAsyncError(async (req: any, res: Response, next: any)
 exports.updateProject = handleAsyncError(async (req: any, res: Response, next: any) => {});
 
 exports.deleteProject = handleAsyncError(async (req: any, res: Response, next: any) => {
+    const { userId } = req.auth;
     let projectId = req.params.projectId;
+    let currUser = await userfrontApi.get(`/v0/users/${userId}`);
+    let currDataObject = currUser?.data?.data;
+
+    if (currDataObject) {
+        let targetIdx = currDataObject.builder.projects.findIndex((x) => x.projectUuid === projectId);
+
+        currDataObject.builder.projects.splice(targetIdx, 1);
+
+        const payload = {
+            data: currDataObject,
+        };
+
+        let response = await userfrontApi.put(`/v0/users/${userId}`, payload);
+        let updatedUser = await userfrontApi.get(`/v0/users/${userId}`);
+
+        if (response && updatedUser) {
+            const { builder } = updatedUser?.data?.data;
+
+            return res.status(200).json({
+                status: 'Success',
+                builder: builder,
+            });
+        }
+
+        return res.status(500).json({
+            status: 'Failed',
+            msg: 'Something went wrong updating userfront data object.',
+        });
+    }
+
+    return res.status(500).json({
+        status: 'Failed',
+        msg: 'An error occurred retrieving user data object',
+    });
 });

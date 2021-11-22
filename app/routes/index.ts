@@ -47,7 +47,7 @@ router
 router
     .get('/builder/user', AuthController.authenticateJWT, builderController.findUserBuilderInfo)
     .post('/builder/project/add', AuthController.authenticateJWT, builderController.addProject)
-    .put('/builder/project/update', AuthController.authenticateJWT, builderController.updateProject)
+    .put('/builder/project/update/:projectUuid', AuthController.authenticateJWT, builderController.updateProject)
     .delete('/builder/project/delete/:projectId', AuthController.authenticateJWT, builderController.deleteProject);
 
 module.exports = router;

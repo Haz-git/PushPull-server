@@ -58,16 +58,20 @@ exports.addProject = handleAsyncError(async (req: any, res: Response, next: any)
     let currUser = await userfrontApi.get(`/v0/users/${userId}`);
     let currDataObject = currUser?.data?.data;
 
+    console.log(currUser);
+
     if (currDataObject) {
         projectBody.projectUuid = uuid();
         projectBody.createdBy = {
             userfrontUserId: userId,
             createdDate: new Date(),
-            username: currUser.username,
-            userImage: currUser.image,
+            username: currUser.data.username,
+            userImage: currUser.data.image,
         };
         projectBody.updatedDate = new Date();
-        projectBody.projectMembers = [{ userfrontUserId: userId, mode: 'EDIT' }];
+        projectBody.projectMembers = [
+            { username: currUser.data.username, userImage: currUser.data.image, userfrontUserId: userId, mode: 'EDIT' },
+        ];
         projectBody.projectTemplates = [];
 
         currDataObject.builder.projects.push(projectBody);

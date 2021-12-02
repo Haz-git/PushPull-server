@@ -11,7 +11,7 @@ const handleAsyncError = require('../utils/handleAsyncErrors');
 const db = require('../models');
 const { Op } = require('sequelize');
 
-exports.findUserBuilderInfo = handleAsyncError(async (req: any, res: Response, next: any) => {
+exports.findUserProjectInfo = handleAsyncError(async (req: any, res: Response, next: any) => {
     const { userId } = req.auth;
 
     if (userId) {

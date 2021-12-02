@@ -8,7 +8,6 @@ const categoryController = require('../controllers/categoryController');
 const workoutProgramController = require('../controllers/workoutProgramController');
 const reviewController = require('../controllers/reviewController');
 const profileController = require('../controllers/profileController');
-const builderController = require('../controllers/builderController');
 const projectController = require('../controllers/projectController');
 
 //Authentication Routes:
@@ -49,6 +48,6 @@ router
     .get('/builder/user', AuthController.authenticateJWT, projectController.findUserProjectInfo)
     .post('/builder/project/add', AuthController.authenticateJWT, projectController.addProject)
     .put('/builder/project/update/:projectUuid', AuthController.authenticateJWT, projectController.updateProject)
-    .delete('/builder/project/delete/:projectId', AuthController.authenticateJWT, builderController.deleteProject);
+    .delete('/builder/project/delete/:projectId', AuthController.authenticateJWT, projectController.deleteProject);
 
 module.exports = router;

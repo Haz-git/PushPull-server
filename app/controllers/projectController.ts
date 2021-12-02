@@ -159,3 +159,49 @@ exports.updateProject = handleAsyncError(async (req: any, res: Response, next: a
         msg: 'An error occurred--no credentials provided',
     });
 });
+
+exports.deleteProject = handleAsyncError(async (req: any, res: Response, next: any) => {
+    const { userId } = req.auth;
+    let projectId = req.params.projectId;
+
+    if (userId && projectId) {
+        let currUser = await userfrontApi.get(`/v0/users/${userId}`);
+
+        try {
+            let targetProject = await db.project.findOne({
+                where: {
+                    id: projectId,
+                },
+            });
+
+            await targetProject.destroy();
+
+            let totalProjects = await db.project.findAll({
+                where: {
+                    projectMembers: {
+                        [Op.contains]: [
+                            {
+                                userfrontUserId: `${userId}`,
+                                username: currUser.data.username,
+                            },
+                        ],
+                    },
+                },
+                order: ['createdAt'],
+            });
+            return res.status(200).json({
+                status: 'Success',
+                builder: totalProjects,
+            });
+        } catch (err) {
+            return res.status(500).json({
+                status: 'Failed',
+                msg: 'An error occurred deleting user project',
+            });
+        }
+    }
+    return res.status(500).json({
+        status: 'Failed',
+        msg: 'An error occurred--no credentials provided',
+    });
+});

@@ -11,6 +11,43 @@ const handleAsyncError = require('../utils/handleAsyncErrors');
 const db = require('../models');
 const { Op } = require('sequelize');
 
+exports.findUserBuilderInfo = handleAsyncError(async (req: any, res: Response, next: any) => {
+    const { userId } = req.auth;
+
+    if (userId) {
+        let currUser = await userfrontApi.get(`/v0/users/${userId}`);
+
+        if (currUser) {
+            let totalProjects = await db.project.findAll({
+                where: {
+                    projectMembers: {
+                        [Op.contains]: [
+                            {
+                                userfrontUserId: `${userId}`,
+                                username: currUser.data.username,
+                            },
+                        ],
+                    },
+                },
+            });
+
+            return res.status(200).json({
+                status: 'Success',
+                builder: totalProjects,
+            });
+        }
+        return res.status(401).json({
+            status: 'Failure',
+            msg: 'Error Accessing User Authentication',
+        });
+    }
+
+    return res.status(500).json({
+        status: 'Failure',
+        msg: 'Error Accessing User Id',
+    });
+});
+
 exports.addProject = handleAsyncError(async (req: any, res: Response, next: any) => {
     const { userId } = req.auth;
     const { projectDetails } = req.body;
@@ -30,9 +67,7 @@ exports.addProject = handleAsyncError(async (req: any, res: Response, next: any)
         projectBody.projectMembers = [
             {
                 username: currUser.data.username,
-                userImage: currUser.data.image,
                 userfrontUserId: `${userId}`,
-                mode: 'EDIT',
             },
         ];
         projectBody.projectTemplates = [];
@@ -46,8 +81,6 @@ exports.addProject = handleAsyncError(async (req: any, res: Response, next: any)
                         {
                             userfrontUserId: `${userId}`,
                             username: currUser.data.username,
-                            userImage: currUser.data.image,
-                            mode: 'EDIT',
                         },
                     ],
                 },

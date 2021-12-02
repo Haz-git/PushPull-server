@@ -29,6 +29,7 @@ exports.findUserProjectInfo = handleAsyncError(async (req: any, res: Response, n
                         ],
                     },
                 },
+                order: ['createdAt'],
             });
 
             return res.status(200).json({
@@ -85,6 +86,7 @@ exports.addProject = handleAsyncError(async (req: any, res: Response, next: any)
                     ],
                 },
             },
+            order: ['createdAt'],
         });
 
         if (addedProject && totalProjects) {
@@ -103,5 +105,57 @@ exports.addProject = handleAsyncError(async (req: any, res: Response, next: any)
     return res.status(500).json({
         status: 'Failed',
         msg: 'An error occurred retrieving user data object',
+    });
+});
+
+exports.updateProject = handleAsyncError(async (req: any, res: Response, next: any) => {
+    const { userId } = req.auth;
+    const { projectDetails } = req.body;
+    let projectUuid = req.params.projectUuid;
+
+    let newProjectDetails = { ...projectDetails };
+    newProjectDetails.updatedDate = new Date();
+
+    console.log(newProjectDetails);
+
+    if (userId && projectUuid) {
+        let currUser = await userfrontApi.get(`/v0/users/${userId}`);
+        try {
+            let targetProject = await db.project.findOne({
+                where: {
+                    id: projectUuid,
+                },
+            });
+
+            await targetProject.update(newProjectDetails);
+            await targetProject.save();
+            let totalProjects = await db.project.findAll({
+                where: {
+                    projectMembers: {
+                        [Op.contains]: [
+                            {
+                                userfrontUserId: `${userId}`,
+                                username: currUser.data.username,
+                            },
+                        ],
+                    },
+                },
+                order: ['createdAt'],
+            });
+
+            return res.status(200).json({
+                status: 'Success',
+                builder: totalProjects,
+            });
+        } catch (err) {
+            return res.status(500).json({
+                status: 'Failed',
+                msg: 'An error occurred retrieving user project',
+            });
+        }
+    }
+    return res.status(500).json({
+        status: 'Failed',
+        msg: 'An error occurred--no credentials provided',
     });
 });

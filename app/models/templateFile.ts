@@ -7,7 +7,6 @@ interface templateFileAttributes {
     templateFileTitle: string;
     templateFileDesc: string;
     templateCreatedBy: any; //JSONB
-    templateUpdatedAt: Date;
     templateSchedule: any;
     templateWeightUnit: string;
     templateLegend: any;
@@ -22,7 +21,6 @@ module.exports = (sequelize: any, DataTypes: any) => {
         public templateFileTitle!: string;
         public templateFileDesc!: string;
         public templateCreatedBy!: any; //JSONB
-        public templateUpdatedAt!: Date;
         public templateSchedule!: any;
         public templateWeightUnit!: string;
         public templateLegend!: any;
@@ -48,10 +46,6 @@ module.exports = (sequelize: any, DataTypes: any) => {
             },
             templateCreatedBy: {
                 type: DataTypes.JSONB,
-                allowNull: false,
-            },
-            templateUpdatedAt: {
-                type: DataTypes.STRING,
                 allowNull: false,
             },
             templateSchedule: {

@@ -13,6 +13,44 @@ const { Op } = require('sequelize');
 
 exports.findTemplates = handleAsyncError(async (req: any, res: Response, next: any) => {
     const { userId } = req.auth;
+
+    if (userId) {
+        const currUser = await userfrontApi.get(`/v0/users/${userId}`);
+
+        if (currUser) {
+            let totalTemplates = await db.templateFile.findAll({
+                where: {
+                    templateCreatedBy: {
+                        [Op.contains]: [
+                            {
+                                userfrontUserId: `${userId}`,
+                                username: currUser.data.username,
+                                userImage: currUser.data.image,
+                            },
+                        ],
+                    },
+                },
+                order: ['createdAt'],
+            });
+
+            if (totalTemplates) {
+                return res.status(200).json({
+                    status: 'Success',
+                    templates: totalTemplates,
+                });
+            }
+
+            return res.status(500).json({
+                status: 'Failed',
+                msg: 'Failed to retrieve templates.',
+            });
+        }
+    }
+
+    return res.status(500).json({
+        status: 'Failed',
+        msg: 'An error occurred finding templates.',
+    });
 });
 
 exports.addTemplate = handleAsyncError(async (req: any, res: Response, next: any) => {

@@ -13,6 +13,7 @@ interface templateFileAttributes {
     templateSavedBlocks: any;
     templateSnapshot: string;
     templateBlocks: any;
+    projectDetails: any;
 }
 
 module.exports = (sequelize: any, DataTypes: any) => {
@@ -27,6 +28,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
         public templateSavedBlocks!: any;
         public templateSnapshot!: string;
         public templateBlocks!: any;
+        public projectDetails!: any;
     }
 
     templateFile.init(
@@ -65,6 +67,10 @@ module.exports = (sequelize: any, DataTypes: any) => {
             },
             templateBlocks: {
                 type: DataTypes.JSONB,
+            },
+            projectDetails: {
+                type: DataTypes.JSONB,
+                allowNull: false,
             },
         },
         { sequelize, modelName: 'templateFile' },

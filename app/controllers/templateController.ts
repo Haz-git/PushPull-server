@@ -17,6 +17,21 @@ exports.findTemplates = handleAsyncError(async (req: any, res: Response, next: a
 
 exports.addTemplate = handleAsyncError(async (req: any, res: Response, next: any) => {
     const { userId } = req.auth;
+    const { templateDetails } = req.body;
+
+    let templateBody = { ...templateDetails };
+    let currUser = await userfrontApi.get(`/v0/users/${userId}`);
+
+    if (currUser && userId) {
+        templateBody.id = uuid();
+        templateBody.templateCreatedBy = {
+            userfrontUserId: `${userId}`,
+            createdDate: new Date(),
+            username: currUser.data.username,
+            userImage: currUser.data.image,
+        };
+        templateBody.updatedAt = new Date();
+    }
 });
 
 exports.updateTemplate = handleAsyncError(async (req: any, res: Response, next: any) => {});

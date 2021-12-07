@@ -10,3 +10,17 @@ const handleAsyncError = require('../utils/handleAsyncErrors');
 //Model:
 const db = require('../models');
 const { Op } = require('sequelize');
+
+exports.findTemplates = handleAsyncError(async (req: any, res: Response, next: any) => {
+    const { userId } = req.auth;
+});
+
+exports.addTemplate = handleAsyncError(async (req: any, res: Response, next: any) => {
+    const { userId } = req.auth;
+});
+
+exports.updateTemplate = handleAsyncError(async (req: any, res: Response, next: any) => {});
+
+exports.deleteTemplate = handleAsyncError(async (req: any, res: Response, next: any) => {
+    const { userId } = req.auth;
+});

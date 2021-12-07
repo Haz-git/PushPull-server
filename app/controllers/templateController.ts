@@ -51,6 +51,7 @@ exports.addTemplate = handleAsyncError(async (req: any, res: Response, next: any
         if (addedTemplate && totalTemplates) {
             return res.status(200).json({
                 status: 'Success',
+                templates: totalTemplates,
             });
         }
     }

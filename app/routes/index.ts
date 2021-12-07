@@ -53,7 +53,7 @@ router
 
 //Template Routes:
 router
-    .get('/template/user', AuthController.authenticateJWT, templateController.findTemplates)
+    .get('/template/project/:projectUuid', AuthController.authenticateJWT, templateController.findTemplates)
     .post('/template/add', AuthController.authenticateJWT, templateController.addTemplate)
     .put('/template/update', AuthController.authenticateJWT, templateController.updateTemplate)
     .delete('/template/delete', AuthController.authenticateJWT, templateController.deleteTemplate);

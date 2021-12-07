@@ -13,8 +13,9 @@ const { Op } = require('sequelize');
 
 exports.findTemplates = handleAsyncError(async (req: any, res: Response, next: any) => {
     const { userId } = req.auth;
+    let projectUuid = req.params.projectUuid;
 
-    if (userId) {
+    if (userId && projectUuid) {
         const currUser = await userfrontApi.get(`/v0/users/${userId}`);
 
         if (currUser) {
@@ -28,6 +29,9 @@ exports.findTemplates = handleAsyncError(async (req: any, res: Response, next: a
                                 userImage: currUser.data.image,
                             },
                         ],
+                    },
+                    projectDetails: {
+                        projectUuid: `${projectUuid}`,
                     },
                 },
                 order: ['createdAt'],

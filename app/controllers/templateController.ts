@@ -22,16 +22,14 @@ exports.findTemplates = handleAsyncError(async (req: any, res: Response, next: a
             let totalTemplates = await db.templateFile.findAll({
                 where: {
                     templateCreatedBy: {
-                        [Op.contains]: [
-                            {
-                                userfrontUserId: `${userId}`,
-                                username: currUser.data.username,
-                                userImage: currUser.data.image,
-                            },
-                        ],
+                        [Op.contains]: {
+                            username: `${currUser.data.username}`,
+                            userImage: `${currUser.data.image}`,
+                            userfrontUserId: `${userId}`,
+                        },
                     },
                     projectDetails: {
-                        projectUuid: `${projectUuid}`,
+                        [Op.contains]: { projectUuid: `${projectUuid}` },
                     },
                 },
                 order: ['createdAt'],
@@ -65,7 +63,6 @@ exports.addTemplate = handleAsyncError(async (req: any, res: Response, next: any
     let currUser = await userfrontApi.get(`/v0/users/${userId}`);
 
     if (currUser && userId) {
-        templateBody.id = uuid();
         templateBody.templateCreatedBy = {
             userfrontUserId: `${userId}`,
             username: currUser.data.username,
@@ -75,16 +72,14 @@ exports.addTemplate = handleAsyncError(async (req: any, res: Response, next: any
         templateBody.createdAt = new Date();
 
         const addedTemplate = await db.templateFile.create(templateBody);
-        const totalTemplates = await db.templateFile.findAll({
+        let totalTemplates = await db.templateFile.findAll({
             where: {
                 templateCreatedBy: {
-                    [Op.contains]: [
-                        {
-                            userfrontUserId: `${userId}`,
-                            username: currUser.data.username,
-                            userImage: currUser.data.image,
-                        },
-                    ],
+                    [Op.contains]: {
+                        userfrontUserId: `${userId}`,
+                        username: currUser.data.username,
+                        userImage: currUser.data.image,
+                    },
                 },
             },
             order: ['createdAt'],

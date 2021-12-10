@@ -116,8 +116,6 @@ exports.updateProject = handleAsyncError(async (req: any, res: Response, next: a
     let newProjectDetails = { ...projectDetails };
     newProjectDetails.updatedDate = new Date();
 
-    console.log(newProjectDetails);
-
     if (userId && projectUuid) {
         let currUser = await userfrontApi.get(`/v0/users/${userId}`);
         try {

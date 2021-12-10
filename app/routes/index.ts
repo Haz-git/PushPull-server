@@ -55,7 +55,7 @@ router
 router
     .get('/template/project/:projectUuid', AuthController.authenticateJWT, templateController.findTemplates)
     .post('/template/add', AuthController.authenticateJWT, templateController.addTemplate)
-    .put('/template/update', AuthController.authenticateJWT, templateController.updateTemplate)
+    .put('/template/update/:templateId', AuthController.authenticateJWT, templateController.updateTemplate)
     .delete('/template/delete', AuthController.authenticateJWT, templateController.deleteTemplate);
 
 module.exports = router;

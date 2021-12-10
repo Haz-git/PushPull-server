@@ -101,7 +101,7 @@ exports.addTemplate = handleAsyncError(async (req: any, res: Response, next: any
 
 exports.updateTemplate = handleAsyncError(async (req: any, res: Response, next: any) => {
     const { userId } = req.auth;
-    const { templateDetails } = req.body;
+    const { templateDetails, projectUuid } = req.body;
     let templateId = req.params.templateId;
 
     let newTemplateDetails = { ...templateDetails };
@@ -119,19 +119,38 @@ exports.updateTemplate = handleAsyncError(async (req: any, res: Response, next: 
 
             await targetTemplate.update(newTemplateDetails);
             await targetTemplate.save();
+            let totalTemplates;
 
-            let totalTemplates = await db.templateFile.findAll({
-                where: {
-                    templateCreatedBy: {
-                        [Op.contains]: {
-                            userfrontUserId: `${userId}`,
-                            username: currUser.data.username,
-                            userImage: currUser.data.image,
+            if (!projectUuid) {
+                totalTemplates = await db.templateFile.findAll({
+                    where: {
+                        templateCreatedBy: {
+                            [Op.contains]: {
+                                userfrontUserId: `${userId}`,
+                                username: currUser.data.username,
+                                userImage: currUser.data.image,
+                            },
                         },
                     },
-                },
-                order: ['createdAt'],
-            });
+                    order: ['createdAt'],
+                });
+            } else {
+                totalTemplates = await db.templateFile.findAll({
+                    where: {
+                        templateCreatedBy: {
+                            [Op.contains]: {
+                                username: `${currUser.data.username}`,
+                                userImage: `${currUser.data.image}`,
+                                userfrontUserId: `${userId}`,
+                            },
+                        },
+                        projectDetails: {
+                            [Op.contains]: { projectUuid: `${projectUuid}` },
+                        },
+                    },
+                    order: ['createdAt'],
+                });
+            }
 
             if (totalTemplates) {
                 return res.status(200).json({

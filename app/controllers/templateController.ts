@@ -173,4 +173,68 @@ exports.updateTemplate = handleAsyncError(async (req: any, res: Response, next: 
 
 exports.deleteTemplate = handleAsyncError(async (req: any, res: Response, next: any) => {
     const { userId } = req.auth;
+    let templateId = req.params.templateId;
+    let projectId = req.query.projectId;
+
+    if (userId && templateId) {
+        let currUser = await userfrontApi.get(`/v0/users/${userId}`);
+
+        try {
+            let targetTemplate = await db.templateFile.findOne({
+                where: {
+                    id: templateId,
+                },
+            });
+
+            await targetTemplate.destroy();
+
+            let totalTemplates;
+            if (!projectId) {
+                totalTemplates = await db.templateFile.findAll({
+                    where: {
+                        templateCreatedBy: {
+                            [Op.contains]: {
+                                userfrontUserId: `${userId}`,
+                                username: currUser.data.username,
+                                userImage: currUser.data.image,
+                            },
+                        },
+                    },
+                    order: ['createdAt'],
+                });
+            } else {
+                totalTemplates = await db.templateFile.findAll({
+                    where: {
+                        templateCreatedBy: {
+                            [Op.contains]: {
+                                username: `${currUser.data.username}`,
+                                userImage: `${currUser.data.image}`,
+                                userfrontUserId: `${userId}`,
+                            },
+                        },
+                        projectDetails: {
+                            [Op.contains]: { projectUuid: `${projectId}` },
+                        },
+                    },
+                    order: ['createdAt'],
+                });
+            }
+
+            if (totalTemplates) {
+                return res.status(200).json({
+                    status: 'Success',
+                    templates: totalTemplates,
+                });
+            }
+        } catch (err) {
+            return res.status(500).json({
+                status: 'Failed',
+                msg: 'An error occurred retrieving user templates',
+            });
+        }
+    }
+    return res.status(500).json({
+        status: 'Failed',
+        msg: 'An error occurred--no credentials provided',
+    });
 });

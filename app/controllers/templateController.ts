@@ -13,27 +13,68 @@ const { Op } = require('sequelize');
 
 exports.findTemplates = handleAsyncError(async (req: any, res: Response, next: any) => {
     const { userId } = req.auth;
+    //This projectUuid could be a uuidV4, or a dashboard view (for projects for dashboard views like recents, published, and drafts).
     let projectUuid = req.params.projectUuid;
+    console.log(projectUuid);
 
     if (userId && projectUuid) {
         const currUser = await userfrontApi.get(`/v0/users/${userId}`);
 
         if (currUser) {
-            let totalTemplates = await db.templateFile.findAll({
-                where: {
-                    templateCreatedBy: {
-                        [Op.contains]: {
-                            username: `${currUser.data.username}`,
-                            userImage: `${currUser.data.image}`,
-                            userfrontUserId: `${userId}`,
+            let totalTemplates;
+
+            if (projectUuid !== 'recents' && projectUuid !== 'published' && projectUuid !== 'drafts') {
+                totalTemplates = await db.templateFile.findAll({
+                    where: {
+                        templateCreatedBy: {
+                            [Op.contains]: {
+                                username: `${currUser.data.username}`,
+                                userfrontUserId: `${userId}`,
+                            },
+                        },
+                        projectDetails: {
+                            [Op.contains]: { projectUuid: `${projectUuid}` },
                         },
                     },
-                    projectDetails: {
-                        [Op.contains]: { projectUuid: `${projectUuid}` },
+                    order: ['createdAt'],
+                });
+            } else if (projectUuid === 'recents') {
+                totalTemplates = await db.templateFile.findAll({
+                    where: {
+                        templateCreatedBy: {
+                            [Op.contains]: {
+                                username: `${currUser.data.username}`,
+                                userfrontUserId: `${userId}`,
+                            },
+                        },
                     },
-                },
-                order: ['createdAt'],
-            });
+                    order: [['updatedAt', 'DESC']],
+                });
+            } else if (projectUuid === 'published') {
+                totalTemplates = await db.templateFile.findAll({
+                    where: {
+                        templateCreatedBy: {
+                            [Op.contains]: {
+                                username: `${currUser.data.username}`,
+                                userfrontUserId: `${userId}`,
+                            },
+                        },
+                    },
+                    order: ['createdAt'],
+                });
+            } else if (projectUuid === 'drafts') {
+                totalTemplates = await db.templateFile.findAll({
+                    where: {
+                        templateCreatedBy: {
+                            [Op.contains]: {
+                                username: `${currUser.data.username}`,
+                                userfrontUserId: `${userId}`,
+                            },
+                        },
+                    },
+                    order: ['createdAt'],
+                });
+            }
 
             if (totalTemplates) {
                 return res.status(200).json({
@@ -66,7 +107,6 @@ exports.addTemplate = handleAsyncError(async (req: any, res: Response, next: any
         templateBody.templateCreatedBy = {
             userfrontUserId: `${userId}`,
             username: currUser.data.username,
-            userImage: currUser.data.image,
         };
         templateBody.updatedAt = new Date();
         templateBody.createdAt = new Date();
@@ -78,7 +118,6 @@ exports.addTemplate = handleAsyncError(async (req: any, res: Response, next: any
                     [Op.contains]: {
                         userfrontUserId: `${userId}`,
                         username: currUser.data.username,
-                        userImage: currUser.data.image,
                     },
                 },
             },
@@ -128,7 +167,6 @@ exports.updateTemplate = handleAsyncError(async (req: any, res: Response, next: 
                             [Op.contains]: {
                                 userfrontUserId: `${userId}`,
                                 username: currUser.data.username,
-                                userImage: currUser.data.image,
                             },
                         },
                     },
@@ -140,7 +178,6 @@ exports.updateTemplate = handleAsyncError(async (req: any, res: Response, next: 
                         templateCreatedBy: {
                             [Op.contains]: {
                                 username: `${currUser.data.username}`,
-                                userImage: `${currUser.data.image}`,
                                 userfrontUserId: `${userId}`,
                             },
                         },
@@ -196,7 +233,6 @@ exports.deleteTemplate = handleAsyncError(async (req: any, res: Response, next: 
                             [Op.contains]: {
                                 userfrontUserId: `${userId}`,
                                 username: currUser.data.username,
-                                userImage: currUser.data.image,
                             },
                         },
                     },
@@ -208,7 +244,6 @@ exports.deleteTemplate = handleAsyncError(async (req: any, res: Response, next: 
                         templateCreatedBy: {
                             [Op.contains]: {
                                 username: `${currUser.data.username}`,
-                                userImage: `${currUser.data.image}`,
                                 userfrontUserId: `${userId}`,
                             },
                         },

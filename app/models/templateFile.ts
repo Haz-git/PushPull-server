@@ -14,6 +14,8 @@ interface templateFileAttributes {
     templateSnapshot: string;
     templateBlocks: any;
     projectDetails: any;
+    isPublished: boolean;
+    isDraft: boolean;
 }
 
 module.exports = (sequelize: any, DataTypes: any) => {
@@ -29,6 +31,8 @@ module.exports = (sequelize: any, DataTypes: any) => {
         public templateSnapshot!: string;
         public templateBlocks!: any;
         public projectDetails!: any;
+        public isPublished!: boolean;
+        public isDraft!: boolean;
     }
 
     templateFile.init(
@@ -70,6 +74,14 @@ module.exports = (sequelize: any, DataTypes: any) => {
             },
             projectDetails: {
                 type: DataTypes.JSONB,
+                allowNull: false,
+            },
+            isDraft: {
+                type: DataTypes.BOOLEAN,
+                allowNull: false,
+            },
+            isPublished: {
+                type: DataTypes.BOOLEAN,
                 allowNull: false,
             },
         },

@@ -59,6 +59,7 @@ exports.findTemplates = handleAsyncError(async (req: any, res: Response, next: a
                                 userfrontUserId: `${userId}`,
                             },
                         },
+                        isPublished: true,
                     },
                     order: ['createdAt'],
                 });
@@ -71,6 +72,8 @@ exports.findTemplates = handleAsyncError(async (req: any, res: Response, next: a
                                 userfrontUserId: `${userId}`,
                             },
                         },
+                        isDraft: true,
+                        isPublished: false,
                     },
                     order: ['createdAt'],
                 });
@@ -110,6 +113,8 @@ exports.addTemplate = handleAsyncError(async (req: any, res: Response, next: any
         };
         templateBody.updatedAt = new Date();
         templateBody.createdAt = new Date();
+        templateBody.isDraft = true;
+        templateBody.isPublished = false;
 
         const addedTemplate = await db.templateFile.create(templateBody);
         let totalTemplates = await db.templateFile.findAll({

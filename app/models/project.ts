@@ -11,6 +11,8 @@ interface projectAttributes {
     projectName: string;
     projectDesc: string;
     projectColor: string;
+    userId: string;
+    userImg: string;
 }
 
 module.exports = (sequelize: any, DataTypes: any) => {
@@ -23,6 +25,8 @@ module.exports = (sequelize: any, DataTypes: any) => {
         public projectName!: string;
         public projectDesc!: string;
         public projectColor!: string;
+        public userId!: string;
+        public userImg!: string;
 
         static associate(models: any) {
             project.hasMany(models.templateFile, { onDelete: 'cascade' });
@@ -63,6 +67,14 @@ module.exports = (sequelize: any, DataTypes: any) => {
             projectColor: {
                 type: DataTypes.STRING,
                 allowNull: false,
+            },
+            userId: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
+            userImg: {
+                type: DataTypes.STRING,
+                allowNull: true,
             },
         },
         { sequelize, modelName: 'project' },

@@ -23,6 +23,10 @@ module.exports = (sequelize: any, DataTypes: any) => {
         public projectName!: string;
         public projectDesc!: string;
         public projectColor!: string;
+
+        static associate(models: any) {
+            project.hasMany(models.templateFile, { onDelete: 'cascade' });
+        }
     }
 
     project.init(

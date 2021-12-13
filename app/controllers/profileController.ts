@@ -14,6 +14,10 @@ const imagekit = new ImageKit({
 //Utils:
 const handleAsyncError = require('../utils/handleAsyncErrors');
 
+//Model:
+const db = require('../models');
+const { Op } = require('sequelize');
+
 exports.findUser = handleAsyncError(async (req: Request, res: Response, next: any) => {
     let username = req.params.username;
 
@@ -124,7 +128,7 @@ exports.updateUserAvatar = handleAsyncError(async (req: any, res: Response, next
 
         if (imageKitResult) {
             let currUser = await userfrontApi.get(`/v0/users/${userId}`);
-            const { url } = imageKitResult;
+            const { url, thumbnailUrl } = imageKitResult;
             if (currUser) {
                 let currDataObject = currUser?.data?.data;
 
@@ -134,6 +138,28 @@ exports.updateUserAvatar = handleAsyncError(async (req: any, res: Response, next
                     image: url,
                     data: currDataObject,
                 };
+
+                //Update all avatars for reviews:
+
+                await db.review.update(
+                    { reviewAuthorImg: url },
+                    {
+                        where: {
+                            reviewAuthorId: `${userId}`,
+                        },
+                    },
+                );
+                // Update all avatars for projects createdBy:
+                await db.project.update(
+                    { userImg: thumbnailUrl },
+                    {
+                        where: {
+                            userId: `${userId}`,
+                        },
+                    },
+                );
+
+                //Update userFront user with new avatar.
 
                 let response = await userfrontApi.put(`/v0/users/${userId}`, payload);
 

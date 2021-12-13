@@ -38,11 +38,14 @@ exports.findReviews = handleAsyncError(async (req: Request, res: Response, next:
     });
 });
 
-exports.addReview = handleAsyncError(async (req: Request, res: Response, next: any) => {
+exports.addReview = handleAsyncError(async (req: any, res: Response, next: any) => {
+    const { userId } = req.auth;
     const { workoutProgramReview } = req.body;
 
+    let workoutProgramObject = { ...workoutProgramReview, reviewAuthorId: userId };
+
     //We create a review in the review table.
-    const addedReview = await db.review.create(workoutProgramReview);
+    const addedReview = await db.review.create(workoutProgramObject);
 
     /*
         We need to update the workout program table based on this new review:

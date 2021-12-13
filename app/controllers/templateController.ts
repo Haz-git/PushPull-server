@@ -15,7 +15,6 @@ exports.findTemplates = handleAsyncError(async (req: any, res: Response, next: a
     const { userId } = req.auth;
     //This projectUuid could be a uuidV4, or a dashboard view (for projects for dashboard views like recents, published, and drafts).
     let projectUuid = req.params.projectUuid;
-    console.log(projectUuid);
 
     if (userId && projectUuid) {
         const currUser = await userfrontApi.get(`/v0/users/${userId}`);
@@ -32,9 +31,7 @@ exports.findTemplates = handleAsyncError(async (req: any, res: Response, next: a
                                 userfrontUserId: `${userId}`,
                             },
                         },
-                        projectDetails: {
-                            [Op.contains]: { projectUuid: `${projectUuid}` },
-                        },
+                        projectId: `${projectUuid}`,
                     },
                     order: ['createdAt'],
                 });
@@ -186,9 +183,7 @@ exports.updateTemplate = handleAsyncError(async (req: any, res: Response, next: 
                                 userfrontUserId: `${userId}`,
                             },
                         },
-                        projectDetails: {
-                            [Op.contains]: { projectUuid: `${projectUuid}` },
-                        },
+                        projectId: `${projectUuid}`,
                     },
                     order: ['createdAt'],
                 });
@@ -252,9 +247,7 @@ exports.deleteTemplate = handleAsyncError(async (req: any, res: Response, next: 
                                 userfrontUserId: `${userId}`,
                             },
                         },
-                        projectDetails: {
-                            [Op.contains]: { projectUuid: `${projectId}` },
-                        },
+                        projectId: `${projectId}`,
                     },
                     order: ['createdAt'],
                 });

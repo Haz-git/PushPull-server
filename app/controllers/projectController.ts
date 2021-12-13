@@ -166,6 +166,8 @@ exports.deleteProject = handleAsyncError(async (req: any, res: Response, next: a
         let currUser = await userfrontApi.get(`/v0/users/${userId}`);
 
         try {
+            //Find target project and destroy:
+
             let targetProject = await db.project.findOne({
                 where: {
                     id: projectId,
@@ -173,6 +175,8 @@ exports.deleteProject = handleAsyncError(async (req: any, res: Response, next: a
             });
 
             await targetProject.destroy();
+
+            //We need to also find all templates associated to project and destroy them.
 
             let totalProjects = await db.project.findAll({
                 where: {

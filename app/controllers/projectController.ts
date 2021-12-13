@@ -62,7 +62,6 @@ exports.addProject = handleAsyncError(async (req: any, res: Response, next: any)
             userfrontUserId: `${userId}`,
             createdDate: new Date(),
             username: currUser.data.username,
-            userImage: currUser.data.image,
         };
         projectBody.updatedDate = new Date();
         projectBody.projectMembers = [
@@ -72,6 +71,8 @@ exports.addProject = handleAsyncError(async (req: any, res: Response, next: any)
             },
         ];
         projectBody.projectTemplates = [];
+        projectBody.userId = `${userId}`;
+        projectBody.userImg = currUser.data.data.imageKitAvatarDetails?.thumbnailUrl;
 
         const addedProject = await db.project.create(projectBody);
 
@@ -175,8 +176,6 @@ exports.deleteProject = handleAsyncError(async (req: any, res: Response, next: a
             });
 
             await targetProject.destroy();
-
-            //We need to also find all templates associated to project and destroy them.
 
             let totalProjects = await db.project.findAll({
                 where: {

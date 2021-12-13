@@ -34,7 +34,7 @@ router
 //Review Routes:
 router
     .get('/reviews/all/:id', reviewController.findReviews)
-    .post('/reviews/submit/:id', reviewController.addReview)
+    .post('/reviews/submit/:id', AuthController.authenticateJWT, reviewController.addReview)
     .post('/review/update_votes', reviewController.updateReviewVotes);
 
 //Profile Routes:

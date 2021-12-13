@@ -13,7 +13,6 @@ interface templateFileAttributes {
     templateSavedBlocks: any;
     templateSnapshot: string;
     templateBlocks: any;
-    projectDetails: any;
     isPublished: boolean;
     isDraft: boolean;
 }
@@ -30,9 +29,11 @@ module.exports = (sequelize: any, DataTypes: any) => {
         public templateSavedBlocks!: any;
         public templateSnapshot!: string;
         public templateBlocks!: any;
-        public projectDetails!: any;
         public isPublished!: boolean;
         public isDraft!: boolean;
+        static associate(models: any) {
+            templateFile.belongsTo(models.project);
+        }
     }
 
     templateFile.init(
@@ -71,10 +72,6 @@ module.exports = (sequelize: any, DataTypes: any) => {
             },
             templateBlocks: {
                 type: DataTypes.JSONB,
-            },
-            projectDetails: {
-                type: DataTypes.JSONB,
-                allowNull: false,
             },
             isDraft: {
                 type: DataTypes.BOOLEAN,

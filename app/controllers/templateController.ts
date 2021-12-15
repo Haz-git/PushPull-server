@@ -271,3 +271,24 @@ exports.deleteTemplate = handleAsyncError(async (req: any, res: Response, next: 
         msg: 'An error occurred--no credentials provided',
     });
 });
+
+//Template Building page requests:
+
+exports.queryTemplate = handleAsyncError(async (req: any, res: Response, next: any) => {
+    let templateId = req.params.templateId;
+
+    if (templateId) {
+        let targetTemplate = await db.templateFile.findByPk(templateId);
+        if (targetTemplate) {
+            return res.status(200).json({
+                status: 'Success',
+                template: targetTemplate,
+            });
+        }
+    }
+
+    return res.status(500).json({
+        status: 'Failed',
+        msg: 'An error occurred querying template',
+    });
+});

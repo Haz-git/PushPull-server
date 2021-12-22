@@ -65,13 +65,13 @@ module.exports = (sequelize: any, DataTypes: any) => {
                 type: DataTypes.JSONB,
             },
             templateSavedBlocks: {
-                type: DataTypes.JSONB,
+                type: DataTypes.ARRAY(DataTypes.JSONB),
             },
             templateSnapshot: {
                 type: DataTypes.STRING,
             },
             templateBlocks: {
-                type: DataTypes.JSONB,
+                type: DataTypes.ARRAY(DataTypes.JSONB),
             },
             isDraft: {
                 type: DataTypes.BOOLEAN,

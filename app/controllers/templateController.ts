@@ -293,12 +293,12 @@ exports.queryTemplate = handleAsyncError(async (req: any, res: Response, next: a
     });
 });
 
-exports.updateTemplateBlocks = handleAsyncError(async (req: any, res: Response, next: any) => {
+exports.addTemplateBlocks = handleAsyncError(async (req: any, res: Response, next: any) => {
     const { userId } = req.auth;
     const { blockDetails } = req.body;
     let templateId = req.params.templateId;
 
-    let newBlockDetails = { ...blockDetails };
+    let newBlockDetails = { ...blockDetails, i: uuid(), x: null, y: null, w: null, h: null };
 
     if (userId && templateId) {
         let currUser = await userfrontApi.get(`/v0/users/${userId}`);

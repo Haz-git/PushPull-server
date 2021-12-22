@@ -112,6 +112,8 @@ exports.addTemplate = handleAsyncError(async (req: any, res: Response, next: any
         templateBody.createdAt = new Date();
         templateBody.isDraft = true;
         templateBody.isPublished = false;
+        templateBody.templateBlocks = [];
+        templateBody.templateSavedBlocks = [];
 
         const addedTemplate = await db.templateFile.create(templateBody);
         let totalTemplates = await db.templateFile.findAll({
@@ -310,14 +312,16 @@ exports.addTemplateBlocks = handleAsyncError(async (req: any, res: Response, nex
                 },
             });
 
-            const updatedBlockList = [...targetTemplate.templateBlocks, newBlockDetails];
+            let updatedBlockList;
 
-            console.log(updatedBlockList);
+            if (targetTemplate.templateBlocks) {
+                updatedBlockList = [...targetTemplate.templateBlocks, newBlockDetails];
+            } else {
+                updatedBlockList = targetTemplate.templateBlocks.push(newBlockDetails);
+            }
 
             await targetTemplate.update({ templateBlocks: updatedBlockList });
             await targetTemplate.save();
-
-            console.log(targetTemplate);
 
             let updatedTemplate = await db.templateFile.findByPk(templateId);
             if (updatedTemplate) {
@@ -327,6 +331,7 @@ exports.addTemplateBlocks = handleAsyncError(async (req: any, res: Response, nex
                 });
             }
         } catch (err) {
+            console.log(err);
             return res.status(500).json({
                 status: 'Failed',
                 msg: 'An error occurred retrieving user templates',

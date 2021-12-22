@@ -310,15 +310,14 @@ exports.addTemplateBlocks = handleAsyncError(async (req: any, res: Response, nex
                 },
             });
 
-            const updatedBlockList = {
-                ...targetTemplate.templateBlocks,
-                newBlockDetails,
-            };
+            const updatedBlockList = [...targetTemplate.templateBlocks, newBlockDetails];
 
             console.log(updatedBlockList);
 
             await targetTemplate.update({ templateBlocks: updatedBlockList });
             await targetTemplate.save();
+
+            console.log(targetTemplate);
 
             let updatedTemplate = await db.templateFile.findByPk(templateId);
             if (updatedTemplate) {

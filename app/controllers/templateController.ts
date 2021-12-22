@@ -292,3 +292,48 @@ exports.queryTemplate = handleAsyncError(async (req: any, res: Response, next: a
         msg: 'An error occurred querying template',
     });
 });
+
+exports.updateTemplateBlocks = handleAsyncError(async (req: any, res: Response, next: any) => {
+    const { userId } = req.auth;
+    const { blockDetails } = req.body;
+    let templateId = req.params.templateId;
+
+    let newBlockDetails = { ...blockDetails };
+
+    if (userId && templateId) {
+        let currUser = await userfrontApi.get(`/v0/users/${userId}`);
+
+        try {
+            let targetTemplate = await db.templateFile.findOne({
+                where: {
+                    id: templateId,
+                },
+            });
+
+            const updatedBlockList = {
+                ...targetTemplate.templateBlocks,
+                newBlockDetails,
+            };
+
+            await targetTemplate.update({ templateBlocks: updatedBlockList });
+            await targetTemplate.save();
+
+            let updatedTemplate = await db.templateFile.findByPk(templateId);
+            if (updatedTemplate) {
+                return res.status(200).json({
+                    status: 'Success',
+                    template: targetTemplate,
+                });
+            }
+        } catch (err) {
+            return res.status(500).json({
+                status: 'Failed',
+                msg: 'An error occurred retrieving user templates',
+            });
+        }
+    }
+    return res.status(500).json({
+        status: 'Failed',
+        msg: 'An error occurred--no credentials provided',
+    });
+});

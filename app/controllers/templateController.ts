@@ -315,6 +315,8 @@ exports.addTemplateBlocks = handleAsyncError(async (req: any, res: Response, nex
                 newBlockDetails,
             };
 
+            console.log(updatedBlockList);
+
             await targetTemplate.update({ templateBlocks: updatedBlockList });
             await targetTemplate.save();
 

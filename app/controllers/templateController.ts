@@ -314,8 +314,6 @@ exports.addTemplateBlocks = handleAsyncError(async (req: any, res: Response, nex
 
             let updatedBlockList;
 
-            console.log(targetTemplate.dataValues);
-
             const { templateBlocks } = targetTemplate?.dataValues;
 
             if (templateBlocks) {

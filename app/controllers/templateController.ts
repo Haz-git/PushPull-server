@@ -295,16 +295,14 @@ exports.queryTemplate = handleAsyncError(async (req: any, res: Response, next: a
     });
 });
 
-exports.addTemplateBlocks = handleAsyncError(async (req: any, res: Response, next: any) => {
+exports.addToolbarBlocks = handleAsyncError(async (req: any, res: Response, next: any) => {
     const { userId } = req.auth;
     const { blockDetails } = req.body;
     let templateId = req.params.templateId;
 
-    let newBlockDetails = { ...blockDetails, i: uuid(), x: null, y: null, w: null, h: null };
+    let newBlockDetails = { ...blockDetails, id: uuid(), prefix: 'Blocks' };
 
     if (userId && templateId) {
-        let currUser = await userfrontApi.get(`/v0/users/${userId}`);
-
         try {
             let targetTemplate = await db.templateFile.findOne({
                 where: {
@@ -312,17 +310,17 @@ exports.addTemplateBlocks = handleAsyncError(async (req: any, res: Response, nex
                 },
             });
 
+            const { templateToolbarBlocks } = targetTemplate?.dataValues;
             let updatedBlockList;
 
-            const { templateBlocks } = targetTemplate?.dataValues;
-
-            if (templateBlocks) {
-                updatedBlockList = [...templateBlocks, newBlockDetails];
+            if (templateToolbarBlocks !== null) {
+                updatedBlockList = [...templateToolbarBlocks, newBlockDetails];
             } else {
-                updatedBlockList = templateBlocks.push(newBlockDetails);
+                updatedBlockList = [];
+                updatedBlockList.push(newBlockDetails);
             }
 
-            await targetTemplate.update({ templateBlocks: updatedBlockList });
+            await targetTemplate.update({ templateToolbarBlocks: updatedBlockList });
             await targetTemplate.save();
 
             let updatedTemplate = await db.templateFile.findByPk(templateId);

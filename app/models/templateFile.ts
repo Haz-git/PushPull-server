@@ -10,9 +10,9 @@ interface templateFileAttributes {
     templateSchedule: any;
     templateWeightUnit: string;
     templateLegend: any;
-    templateSavedBlocks: any;
     templateSnapshot: string;
-    templateBlocks: any;
+    templateToolbarBlocks: any;
+    templateEditingSurfaceBlocks: any;
     isPublished: boolean;
     isDraft: boolean;
 }
@@ -26,9 +26,9 @@ module.exports = (sequelize: any, DataTypes: any) => {
         public templateSchedule!: any;
         public templateWeightUnit!: string;
         public templateLegend!: any;
-        public templateSavedBlocks!: any;
         public templateSnapshot!: string;
-        public templateBlocks!: any;
+        public templateToolbarBlocks!: any;
+        public templateEditingSurfaceBlocks: any;
         public isPublished!: boolean;
         public isDraft!: boolean;
         static associate(models: any) {
@@ -64,13 +64,13 @@ module.exports = (sequelize: any, DataTypes: any) => {
             templateLegend: {
                 type: DataTypes.JSONB,
             },
-            templateSavedBlocks: {
-                type: DataTypes.ARRAY(DataTypes.JSONB),
-            },
             templateSnapshot: {
                 type: DataTypes.STRING,
             },
-            templateBlocks: {
+            templateToolbarBlocks: {
+                type: DataTypes.ARRAY(DataTypes.JSONB),
+            },
+            templateEditingSurfaceBlocks: {
                 type: DataTypes.ARRAY(DataTypes.JSONB),
             },
             isDraft: {

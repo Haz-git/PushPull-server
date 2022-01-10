@@ -343,3 +343,73 @@ exports.addToolbarBlocks = handleAsyncError(async (req: any, res: Response, next
         msg: 'An error occurred--no credentials provided',
     });
 });
+
+exports.addEditingSurfaceBlocks = handleAsyncError(async (req: any, res: Response, next: any) => {
+    //Handle adding blocks moved from toolbar to editing surface.
+    const { userId } = req.auth;
+    const { blockDetails } = req.body;
+    let templateId = req.params.templateId;
+
+    const { weekId, weekContent } = blockDetails;
+
+    if (userId && templateId) {
+        try {
+            let targetTemplate = await db.templateFile.findOne({
+                where: {
+                    id: templateId,
+                },
+            });
+
+            const { templateEditingSurfaceBlocks } = targetTemplate?.dataValues;
+            let newWeekContent = { ...weekContent };
+
+            if (!templateEditingSurfaceBlocks) {
+                //If this is the user's first addition to editing surface.
+                let newTemplateEditingSurfaceBlocks = [
+                    {
+                        weekId: `${uuid()}`,
+                        weekName: 'Untitled Week',
+                        weekContent: {},
+                    },
+                ];
+
+                await targetTemplate.update({ templateEditingSurfaceBlocks: newTemplateEditingSurfaceBlocks });
+                await targetTemplate.save();
+            } else {
+                let targetWeekIdx = templateEditingSurfaceBlocks.findIndex(
+                    (weekObject) => weekObject.weekId === weekId,
+                );
+                if (targetWeekIdx !== -1) {
+                    let newTemplateEditingSurfaceBlocks = [...templateEditingSurfaceBlocks];
+                    newTemplateEditingSurfaceBlocks[targetWeekIdx]['weekContent'] = newWeekContent;
+
+                    await targetTemplate.update({ templateEditingSurfaceBlocks: newTemplateEditingSurfaceBlocks });
+                    await targetTemplate.save();
+
+                    let updatedTemplate = await db.templateFile.findByPk(templateId);
+                    if (updatedTemplate) {
+                        return res.status(200).json({
+                            status: 'Success',
+                            template: targetTemplate,
+                        });
+                    }
+                } else {
+                    return res.status(500).json({
+                        status: 'Failed',
+                        msg: 'An error occurred finding week id',
+                    });
+                }
+            }
+        } catch (err) {
+            console.log(err);
+            return res.status(500).json({
+                status: 'Failed',
+                msg: 'An error occurred retrieving user templates',
+            });
+        }
+    }
+    return res.status(500).json({
+        status: 'Failed',
+        msg: 'An error occurred--no credentials provided',
+    });
+});

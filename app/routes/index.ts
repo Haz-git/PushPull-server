@@ -57,6 +57,11 @@ router
     .get('/template/query/:templateId', AuthController.authenticateJWT, templateController.queryTemplate)
     .post('/template/add', AuthController.authenticateJWT, templateController.addTemplate)
     .post('/template/toolbar/add/:templateId', AuthController.authenticateJWT, templateController.addToolbarBlocks)
+    .post(
+        '/template/surface/add/:templateId',
+        AuthController.authenticateJWT,
+        templateController.addEditingSurfaceBlocks,
+    )
     .put('/template/update/:templateId', AuthController.authenticateJWT, templateController.updateTemplate)
     .delete('/template/delete/:templateId', AuthController.authenticateJWT, templateController.deleteTemplate);
 

@@ -112,8 +112,22 @@ exports.addTemplate = handleAsyncError(async (req: any, res: Response, next: any
         templateBody.createdAt = new Date();
         templateBody.isDraft = true;
         templateBody.isPublished = false;
-        templateBody.templateBlocks = [];
-        templateBody.templateSavedBlocks = [];
+        templateBody.templateEditingSurfaceBlocks = [
+            {
+                weekId: `${uuid()}`,
+                weekName: 'Untitled Week',
+                weekContent: {
+                    'Day 1': [],
+                    'Day 2': [],
+                    'Day 3': [],
+                    'Day 4': [],
+                    'Day 5': [],
+                    'Day 6': [],
+                    'Day 7': [],
+                },
+            },
+        ];
+        templateBody.templateToolbarBlocks = [];
 
         const addedTemplate = await db.templateFile.create(templateBody);
         let totalTemplates = await db.templateFile.findAll({
@@ -362,43 +376,27 @@ exports.addEditingSurfaceBlocks = handleAsyncError(async (req: any, res: Respons
 
             const { templateEditingSurfaceBlocks } = targetTemplate?.dataValues;
             let newWeekContent = { ...weekContent };
+            let targetWeekIdx = templateEditingSurfaceBlocks.findIndex((weekObject) => weekObject.weekId === weekId);
 
-            if (!templateEditingSurfaceBlocks) {
-                //If this is the user's first addition to editing surface.
-                let newTemplateEditingSurfaceBlocks = [
-                    {
-                        weekId: `${uuid()}`,
-                        weekName: 'Untitled Week',
-                        weekContent: {},
-                    },
-                ];
-
-                await targetTemplate.update({ templateEditingSurfaceBlocks: newTemplateEditingSurfaceBlocks });
+            if (targetWeekIdx !== -1) {
+                targetTemplate.dataValues.templateEditingSurfaceBlocks[targetWeekIdx]['weekContent'] = newWeekContent;
+                //According to: https://sequelize.org/master/manual/upgrade-to-v6.html, Deeply nested JSON property changes
+                //Will need .changed() to denote change...
+                targetTemplate.changed('templateEditingSurfaceBlocks', true);
                 await targetTemplate.save();
-            } else {
-                let targetWeekIdx = templateEditingSurfaceBlocks.findIndex(
-                    (weekObject) => weekObject.weekId === weekId,
-                );
-                if (targetWeekIdx !== -1) {
-                    let newTemplateEditingSurfaceBlocks = [...templateEditingSurfaceBlocks];
-                    newTemplateEditingSurfaceBlocks[targetWeekIdx]['weekContent'] = newWeekContent;
 
-                    await targetTemplate.update({ templateEditingSurfaceBlocks: newTemplateEditingSurfaceBlocks });
-                    await targetTemplate.save();
-
-                    let updatedTemplate = await db.templateFile.findByPk(templateId);
-                    if (updatedTemplate) {
-                        return res.status(200).json({
-                            status: 'Success',
-                            template: targetTemplate,
-                        });
-                    }
-                } else {
-                    return res.status(500).json({
-                        status: 'Failed',
-                        msg: 'An error occurred finding week id',
+                let updatedTemplate = await db.templateFile.findByPk(templateId);
+                if (updatedTemplate) {
+                    return res.status(200).json({
+                        status: 'Success',
+                        template: targetTemplate,
                     });
                 }
+            } else {
+                return res.status(500).json({
+                    status: 'Failed',
+                    msg: 'An error occurred finding week id',
+                });
             }
         } catch (err) {
             console.log(err);

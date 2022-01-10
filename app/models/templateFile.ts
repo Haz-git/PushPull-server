@@ -69,9 +69,11 @@ module.exports = (sequelize: any, DataTypes: any) => {
             },
             templateToolbarBlocks: {
                 type: DataTypes.ARRAY(DataTypes.JSONB),
+                allowNull: false,
             },
             templateEditingSurfaceBlocks: {
                 type: DataTypes.ARRAY(DataTypes.JSONB),
+                allowNull: false,
             },
             isDraft: {
                 type: DataTypes.BOOLEAN,

@@ -411,3 +411,7 @@ exports.addEditingSurfaceBlocks = handleAsyncError(async (req: any, res: Respons
         msg: 'An error occurred--no credentials provided',
     });
 });
+
+exports.deleteEditingSurfaceBlocks = handleAsyncError(async (req: any, res: Response, next: any) => {});
+
+exports.deleteToolbarBlocks = handleAsyncError(async (req: any, res: Response, next: any) => {});

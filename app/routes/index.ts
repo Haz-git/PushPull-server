@@ -63,6 +63,16 @@ router
         templateController.addEditingSurfaceBlocks,
     )
     .put('/template/update/:templateId', AuthController.authenticateJWT, templateController.updateTemplate)
-    .delete('/template/delete/:templateId', AuthController.authenticateJWT, templateController.deleteTemplate);
+    .delete('/template/delete/:templateId', AuthController.authenticateJWT, templateController.deleteTemplate)
+    .delete(
+        '/template/toolbar/delete/:templateId',
+        AuthController.authenticateJWT,
+        templateController.deleteToolbarBlocks,
+    )
+    .delete(
+        '/template/surface/delete/:templateId',
+        AuthController.authenticateJWT,
+        templateController.deleteEditingSurfaceBlocks,
+    );
 
 module.exports = router;

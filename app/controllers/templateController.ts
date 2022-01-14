@@ -412,6 +412,99 @@ exports.addEditingSurfaceBlocks = handleAsyncError(async (req: any, res: Respons
     });
 });
 
-exports.deleteEditingSurfaceBlocks = handleAsyncError(async (req: any, res: Response, next: any) => {});
+exports.deleteEditingSurfaceBlocks = handleAsyncError(async (req: any, res: Response, next: any) => {
+    let templateId = req.params.templateId;
+    const { weekId, blockId, columnPrefix } = req.query;
 
-exports.deleteToolbarBlocks = handleAsyncError(async (req: any, res: Response, next: any) => {});
+    if (templateId) {
+        try {
+            let targetTemplate = await db.templateFile.findOne({
+                where: {
+                    id: templateId,
+                },
+            });
+
+            const { templateEditingSurfaceBlocks } = targetTemplate?.dataValues;
+            const targetWeekIdx = templateEditingSurfaceBlocks.findIndex((weekObject) => weekObject.weekId === weekId);
+
+            if (targetWeekIdx !== -1) {
+                let targetColumn =
+                    targetTemplate.dataValues.templateEditingSurfaceBlocks[targetWeekIdx]['weekContent'][columnPrefix];
+                let deletionBlockIdx = targetColumn.findIndex((block) => block.id === blockId);
+                targetTemplate.dataValues.templateEditingSurfaceBlocks[targetWeekIdx]['weekContent'][
+                    columnPrefix
+                ].splice(deletionBlockIdx, 1);
+
+                targetTemplate.changed('templateEditingSurfaceBlocks', true);
+                await targetTemplate.save();
+
+                let updatedTemplate = await db.templateFile.findByPk(templateId);
+                if (updatedTemplate) {
+                    return res.status(200).json({
+                        status: 'Success',
+                        template: targetTemplate,
+                    });
+                }
+            }
+
+            return res.status(500).json({
+                status: 'Failed',
+                msg: 'An error occurred finding week id',
+            });
+        } catch (err) {
+            console.warn(err);
+            return res.status(500).json({
+                status: 'Failed',
+                msg: 'An error occurred performing delete operation on surface block',
+            });
+        }
+    }
+
+    return res.status(500).json({
+        status: 'Failed',
+        msg: 'An error occurred--no templateId provided',
+    });
+});
+
+exports.deleteToolbarBlocks = handleAsyncError(async (req: any, res: Response, next: any) => {
+    let templateId = req.params.templateId;
+    let blockId = req.query.blockId;
+
+    if (templateId && blockId) {
+        try {
+            let targetTemplate = await db.templateFile.findOne({
+                where: {
+                    id: templateId,
+                },
+            });
+
+            const { templateToolbarBlocks } = targetTemplate?.dataValues;
+            const deletionBlockIdx = templateToolbarBlocks.findIndex((block) => block.id === blockId);
+
+            let modifiedToolbarBlocks = [...templateToolbarBlocks];
+            modifiedToolbarBlocks.splice(deletionBlockIdx, 1);
+
+            await targetTemplate.update({ templateToolbarBlocks: modifiedToolbarBlocks });
+            await targetTemplate.save();
+
+            let updatedTemplate = await db.templateFile.findByPk(templateId);
+            if (updatedTemplate) {
+                return res.status(200).json({
+                    status: 'Success',
+                    template: targetTemplate,
+                });
+            }
+        } catch (err) {
+            console.warn(err);
+            return res.status(500).json({
+                status: 'Failed',
+                msg: 'An error occurred retrieving user templates',
+            });
+        }
+    }
+
+    return res.status(500).json({
+        status: 'Failed',
+        msg: 'An error occurred--no credentials provided',
+    });
+});

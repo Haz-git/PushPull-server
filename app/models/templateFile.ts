@@ -11,6 +11,7 @@ interface templateFileAttributes {
     templateWeightUnit: string;
     templateLegend: any;
     templateSnapshot: string;
+    templateUserInputs: any;
     templateToolbarBlocks: any;
     templateEditingSurfaceBlocks: any;
     isPublished: boolean;
@@ -27,6 +28,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
         public templateWeightUnit!: string;
         public templateLegend!: any;
         public templateSnapshot!: string;
+        public templateUserInputs!: any;
         public templateToolbarBlocks!: any;
         public templateEditingSurfaceBlocks: any;
         public isPublished!: boolean;
@@ -62,10 +64,13 @@ module.exports = (sequelize: any, DataTypes: any) => {
                 type: DataTypes.STRING,
             },
             templateLegend: {
-                type: DataTypes.JSONB,
+                type: DataTypes.ARRAY(DataTypes.JSONB),
             },
             templateSnapshot: {
                 type: DataTypes.STRING,
+            },
+            templateUserInputs: {
+                type: DataTypes.ARRAY(DataTypes.JSONB),
             },
             templateToolbarBlocks: {
                 type: DataTypes.ARRAY(DataTypes.JSONB),

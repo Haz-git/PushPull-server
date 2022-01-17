@@ -108,6 +108,7 @@ exports.addTemplate = handleAsyncError(async (req: any, res: Response, next: any
             userfrontUserId: `${userId}`,
             username: currUser.data.username,
         };
+        templateBody.templateFileDesc = '';
         templateBody.templateWeightUnit = 'LBS';
         templateBody.updatedAt = new Date();
         templateBody.createdAt = new Date();

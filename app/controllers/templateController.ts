@@ -108,6 +108,7 @@ exports.addTemplate = handleAsyncError(async (req: any, res: Response, next: any
             userfrontUserId: `${userId}`,
             username: currUser.data.username,
         };
+        templateBody.templateWeightUnit = 'LBS';
         templateBody.updatedAt = new Date();
         templateBody.createdAt = new Date();
         templateBody.isDraft = true;
@@ -128,6 +129,8 @@ exports.addTemplate = handleAsyncError(async (req: any, res: Response, next: any
             },
         ];
         templateBody.templateToolbarBlocks = [];
+        templateBody.templateLegend = [];
+        templateBody.templateUserInputs = [];
 
         const addedTemplate = await db.templateFile.create(templateBody);
         let totalTemplates = await db.templateFile.findAll({

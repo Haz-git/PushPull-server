@@ -109,7 +109,7 @@ exports.addTemplate = handleAsyncError(async (req: any, res: Response, next: any
             username: currUser.data.username,
         };
         templateBody.templateFileDesc = '';
-        templateBody.templateWeightUnit = 'LBS';
+        templateBody.templateWeightUnit = 'IMPERIAL';
         templateBody.updatedAt = new Date();
         templateBody.createdAt = new Date();
         templateBody.isDraft = true;

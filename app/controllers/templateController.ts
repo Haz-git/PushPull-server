@@ -517,8 +517,40 @@ exports.reorderEditingSurfaceColumns = handleAsyncError(async (req: any, res: Re
     const templateId = req.params.templateId;
     const { weekId, newColumnOrder } = req.body.reorderDetails;
 
-    if (templateId) {
+    if (templateId && weekId && newColumnOrder) {
         try {
+            let targetTemplate = await db.templateFile.findOne({
+                where: {
+                    id: templateId,
+                },
+            });
+
+            const { templateEditingSurfaceBlocks } = targetTemplate?.dataValues;
+            const targetWeekIdx = templateEditingSurfaceBlocks.findIndex((weekObject) => weekObject.weekId === weekId);
+
+            const OldColumnOrder = templateEditingSurfaceBlocks[targetWeekIdx]['weekContent'];
+
+            // Create new object with newColumnOrder:
+            let newColumnOrderObject = {};
+
+            // Pass block values from oldColumnOrder to newColumnOrder Object.
+            newColumnOrder.forEach((item) => (newColumnOrderObject[item] = OldColumnOrder[item]));
+
+            targetTemplate.dataValues.templateEditingSurfaceBlocks[targetWeekIdx]['weekContent'] = newColumnOrderObject;
+
+            targetTemplate.changed('templateEditingSurfaceBlocks', true);
+
+            await targetTemplate.save();
+
+            let updatedTemplate = await db.templateFile.findByPk(templateId);
+
+            console.log(updatedTemplate.dataValues.templateEditingSurfaceBlocks[0]['weekContent']);
+            if (updatedTemplate) {
+                return res.status(200).json({
+                    status: 'Success',
+                    template: targetTemplate,
+                });
+            }
         } catch (err) {
             console.warn(err);
             return res.status(500).json({

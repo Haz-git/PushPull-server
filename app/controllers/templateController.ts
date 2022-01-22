@@ -118,6 +118,7 @@ exports.addTemplate = handleAsyncError(async (req: any, res: Response, next: any
             {
                 weekId: `${uuid()}`,
                 weekName: 'Untitled Week',
+                weekOrder: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7'],
                 weekContent: {
                     'Day 1': [],
                     'Day 2': [],
@@ -528,15 +529,7 @@ exports.reorderEditingSurfaceColumns = handleAsyncError(async (req: any, res: Re
             const { templateEditingSurfaceBlocks } = targetTemplate?.dataValues;
             const targetWeekIdx = templateEditingSurfaceBlocks.findIndex((weekObject) => weekObject.weekId === weekId);
 
-            const OldColumnOrder = templateEditingSurfaceBlocks[targetWeekIdx]['weekContent'];
-
-            // Create new object with newColumnOrder:
-            let newColumnOrderObject = {};
-
-            // Pass block values from oldColumnOrder to newColumnOrder Object.
-            newColumnOrder.forEach((item) => (newColumnOrderObject[item] = OldColumnOrder[item]));
-
-            targetTemplate.dataValues.templateEditingSurfaceBlocks[targetWeekIdx]['weekContent'] = newColumnOrderObject;
+            targetTemplate.dataValues.templateEditingSurfaceBlocks[targetWeekIdx]['weekOrder'] = newColumnOrder;
 
             targetTemplate.changed('templateEditingSurfaceBlocks', true);
 
@@ -544,7 +537,6 @@ exports.reorderEditingSurfaceColumns = handleAsyncError(async (req: any, res: Re
 
             let updatedTemplate = await db.templateFile.findByPk(templateId);
 
-            console.log(updatedTemplate.dataValues.templateEditingSurfaceBlocks[0]['weekContent']);
             if (updatedTemplate) {
                 return res.status(200).json({
                     status: 'Success',

@@ -512,3 +512,24 @@ exports.deleteToolbarBlocks = handleAsyncError(async (req: any, res: Response, n
         msg: 'An error occurred--no credentials provided',
     });
 });
+
+exports.reorderEditingSurfaceColumns = handleAsyncError(async (req: any, res: Response, next: any) => {
+    const templateId = req.params.templateId;
+    const { weekId, newColumnOrder } = req.body.reorderDetails;
+
+    if (templateId) {
+        try {
+        } catch (err) {
+            console.warn(err);
+            return res.status(500).json({
+                status: 'Failed',
+                msg: 'An error occurred retrieving user templates',
+            });
+        }
+    }
+
+    return res.status(500).json({
+        status: 'Failed',
+        msg: 'An error occurred--no credentials provided',
+    });
+});

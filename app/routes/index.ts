@@ -62,6 +62,11 @@ router
         AuthController.authenticateJWT,
         templateController.addEditingSurfaceBlocks,
     )
+    .post(
+        '/template/surface/reorder/:templateId',
+        AuthController.authenticateJWT,
+        templateController.reorderEditingSurfaceColumns,
+    )
     .put('/template/update/:templateId', AuthController.authenticateJWT, templateController.updateTemplate)
     .delete('/template/delete/:templateId', AuthController.authenticateJWT, templateController.deleteTemplate)
     .delete(

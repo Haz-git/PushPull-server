@@ -58,6 +58,11 @@ router
     .post('/template/add', AuthController.authenticateJWT, templateController.addTemplate)
     .post('/template/toolbar/add/:templateId', AuthController.authenticateJWT, templateController.addToolbarBlocks)
     .post(
+        '/template/surface/rename-column/:templateId',
+        AuthController.authenticateJWT,
+        templateController.renameEditingSurfaceColumns,
+    )
+    .post(
         '/template/surface/add/:templateId',
         AuthController.authenticateJWT,
         templateController.addEditingSurfaceBlocks,

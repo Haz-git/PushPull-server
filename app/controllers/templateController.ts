@@ -573,12 +573,34 @@ exports.renameEditingSurfaceColumns = handleAsyncError(async (req: any, res: Res
             const { templateEditingSurfaceBlocks } = targetTemplate?.dataValues;
             const targetWeekIdx = templateEditingSurfaceBlocks.findIndex((weekObject) => weekObject.weekId === weekId);
 
-            // if (updatedTemplate) {
-            //     return res.status(200).json({
-            //         status: 'Success',
-            //         template: targetTemplate,
-            //     });
-            // }
+            const orderIdx = templateEditingSurfaceBlocks[targetWeekIdx]['weekOrder'].indexOf(oldColumnName);
+
+            templateEditingSurfaceBlocks[targetWeekIdx]['weekOrder'].splice(orderIdx, 1, newColumnName);
+
+            const weekContentObj = templateEditingSurfaceBlocks[targetWeekIdx]['weekContent'];
+
+            if (oldColumnName !== newColumnName) {
+                Object.defineProperty(
+                    weekContentObj,
+                    newColumnName,
+                    Object.getOwnPropertyDescriptor(weekContentObj, oldColumnName) as any,
+                );
+
+                delete weekContentObj[oldColumnName];
+            }
+
+            targetTemplate.changed('templateEditingSurfaceBlocks', true);
+
+            await targetTemplate.save();
+
+            let updatedTemplate = await db.templateFile.findByPk(templateId);
+
+            if (updatedTemplate) {
+                return res.status(200).json({
+                    status: 'Success',
+                    template: targetTemplate,
+                });
+            }
         } catch (err) {
             console.warn(err);
             return res.status(500).json({

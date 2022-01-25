@@ -557,3 +557,39 @@ exports.reorderEditingSurfaceColumns = handleAsyncError(async (req: any, res: Re
         msg: 'An error occurred--no credentials provided',
     });
 });
+
+exports.renameEditingSurfaceColumns = handleAsyncError(async (req: any, res: Response, next: any) => {
+    const templateId = req.params.templateId;
+    const { weekId, oldColumnName, newColumnName } = req.body.renameDetails;
+
+    if (templateId && weekId && oldColumnName && newColumnName) {
+        try {
+            let targetTemplate = await db.templateFile.findOne({
+                where: {
+                    id: templateId,
+                },
+            });
+
+            const { templateEditingSurfaceBlocks } = targetTemplate?.dataValues;
+            const targetWeekIdx = templateEditingSurfaceBlocks.findIndex((weekObject) => weekObject.weekId === weekId);
+
+            // if (updatedTemplate) {
+            //     return res.status(200).json({
+            //         status: 'Success',
+            //         template: targetTemplate,
+            //     });
+            // }
+        } catch (err) {
+            console.warn(err);
+            return res.status(500).json({
+                status: 'Failed',
+                msg: 'An error occurred retrieving user templates',
+            });
+        }
+    }
+
+    return res.status(500).json({
+        status: 'Failed',
+        msg: 'An error occurred--no credentials provided',
+    });
+});

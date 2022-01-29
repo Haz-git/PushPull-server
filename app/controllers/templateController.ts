@@ -117,7 +117,7 @@ exports.addTemplate = handleAsyncError(async (req: any, res: Response, next: any
         templateBody.templateEditingSurfaceBlocks = [
             {
                 sheetId: `${uuid()}`,
-                sheetName: 'Untitled Week',
+                sheetName: 'Untitled Sheet',
                 sheetOrder: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7'],
                 sheetContent: {
                     'Day 1': [],
@@ -369,7 +369,7 @@ exports.addEditingSurfaceBlocks = handleAsyncError(async (req: any, res: Respons
     const { blockDetails } = req.body;
     let templateId = req.params.templateId;
 
-    const { weekId, weekContent } = blockDetails;
+    const { sheetId, sheetContent } = blockDetails;
 
     if (userId && templateId) {
         try {
@@ -380,11 +380,12 @@ exports.addEditingSurfaceBlocks = handleAsyncError(async (req: any, res: Respons
             });
 
             const { templateEditingSurfaceBlocks } = targetTemplate?.dataValues;
-            let newWeekContent = { ...weekContent };
-            let targetWeekIdx = templateEditingSurfaceBlocks.findIndex((weekObject) => weekObject.weekId === weekId);
+            let newsheetContent = { ...sheetContent };
+            let targetSheetIdx = templateEditingSurfaceBlocks.findIndex((weekObject) => weekObject.sheetId === sheetId);
 
-            if (targetWeekIdx !== -1) {
-                targetTemplate.dataValues.templateEditingSurfaceBlocks[targetWeekIdx]['weekContent'] = newWeekContent;
+            if (targetSheetIdx !== -1) {
+                targetTemplate.dataValues.templateEditingSurfaceBlocks[targetSheetIdx]['sheetContent'] =
+                    newsheetContent;
                 //According to: https://sequelize.org/master/manual/upgrade-to-v6.html, Deeply nested JSON property changes
                 //Will need .changed() to denote change...
                 targetTemplate.changed('templateEditingSurfaceBlocks', true);
@@ -419,7 +420,7 @@ exports.addEditingSurfaceBlocks = handleAsyncError(async (req: any, res: Respons
 
 exports.deleteEditingSurfaceBlocks = handleAsyncError(async (req: any, res: Response, next: any) => {
     let templateId = req.params.templateId;
-    const { weekId, blockId, columnPrefix } = req.query;
+    const { sheetId, blockId, columnPrefix } = req.query;
 
     if (templateId) {
         try {
@@ -430,13 +431,17 @@ exports.deleteEditingSurfaceBlocks = handleAsyncError(async (req: any, res: Resp
             });
 
             const { templateEditingSurfaceBlocks } = targetTemplate?.dataValues;
-            const targetWeekIdx = templateEditingSurfaceBlocks.findIndex((weekObject) => weekObject.weekId === weekId);
+            const targetSheetIdx = templateEditingSurfaceBlocks.findIndex(
+                (weekObject) => weekObject.sheetId === sheetId,
+            );
 
-            if (targetWeekIdx !== -1) {
+            if (targetSheetIdx !== -1) {
                 let targetColumn =
-                    targetTemplate.dataValues.templateEditingSurfaceBlocks[targetWeekIdx]['weekContent'][columnPrefix];
+                    targetTemplate.dataValues.templateEditingSurfaceBlocks[targetSheetIdx]['sheetContent'][
+                        columnPrefix
+                    ];
                 let deletionBlockIdx = targetColumn.findIndex((block) => block.id === blockId);
-                targetTemplate.dataValues.templateEditingSurfaceBlocks[targetWeekIdx]['weekContent'][
+                targetTemplate.dataValues.templateEditingSurfaceBlocks[targetSheetIdx]['sheetContent'][
                     columnPrefix
                 ].splice(deletionBlockIdx, 1);
 
@@ -516,9 +521,9 @@ exports.deleteToolbarBlocks = handleAsyncError(async (req: any, res: Response, n
 
 exports.reorderEditingSurfaceColumns = handleAsyncError(async (req: any, res: Response, next: any) => {
     const templateId = req.params.templateId;
-    const { weekId, newColumnOrder } = req.body.reorderDetails;
+    const { sheetId, newColumnOrder } = req.body.reorderDetails;
 
-    if (templateId && weekId && newColumnOrder) {
+    if (templateId && sheetId && newColumnOrder) {
         try {
             let targetTemplate = await db.templateFile.findOne({
                 where: {
@@ -527,9 +532,11 @@ exports.reorderEditingSurfaceColumns = handleAsyncError(async (req: any, res: Re
             });
 
             const { templateEditingSurfaceBlocks } = targetTemplate?.dataValues;
-            const targetWeekIdx = templateEditingSurfaceBlocks.findIndex((weekObject) => weekObject.weekId === weekId);
+            const targetSheetIdx = templateEditingSurfaceBlocks.findIndex(
+                (weekObject) => weekObject.sheetId === sheetId,
+            );
 
-            targetTemplate.dataValues.templateEditingSurfaceBlocks[targetWeekIdx]['weekOrder'] = newColumnOrder;
+            targetTemplate.dataValues.templateEditingSurfaceBlocks[targetSheetIdx]['sheetOrder'] = newColumnOrder;
 
             targetTemplate.changed('templateEditingSurfaceBlocks', true);
 
@@ -560,9 +567,9 @@ exports.reorderEditingSurfaceColumns = handleAsyncError(async (req: any, res: Re
 
 exports.renameEditingSurfaceColumns = handleAsyncError(async (req: any, res: Response, next: any) => {
     const templateId = req.params.templateId;
-    const { weekId, oldColumnName, newColumnName } = req.body.renameDetails;
+    const { sheetId, oldColumnName, newColumnName } = req.body.renameDetails;
 
-    if (templateId && weekId && oldColumnName && newColumnName) {
+    if (templateId && sheetId && oldColumnName && newColumnName) {
         try {
             let targetTemplate = await db.templateFile.findOne({
                 where: {
@@ -571,22 +578,24 @@ exports.renameEditingSurfaceColumns = handleAsyncError(async (req: any, res: Res
             });
 
             const { templateEditingSurfaceBlocks } = targetTemplate?.dataValues;
-            const targetWeekIdx = templateEditingSurfaceBlocks.findIndex((weekObject) => weekObject.weekId === weekId);
+            const targetSheetIdx = templateEditingSurfaceBlocks.findIndex(
+                (weekObject) => weekObject.sheetId === sheetId,
+            );
 
-            const orderIdx = templateEditingSurfaceBlocks[targetWeekIdx]['weekOrder'].indexOf(oldColumnName);
+            const orderIdx = templateEditingSurfaceBlocks[targetSheetIdx]['sheetOrder'].indexOf(oldColumnName);
 
-            templateEditingSurfaceBlocks[targetWeekIdx]['weekOrder'].splice(orderIdx, 1, newColumnName);
+            templateEditingSurfaceBlocks[targetSheetIdx]['sheetOrder'].splice(orderIdx, 1, newColumnName);
 
-            const weekContentObj = templateEditingSurfaceBlocks[targetWeekIdx]['weekContent'];
+            const sheetContentObj = templateEditingSurfaceBlocks[targetSheetIdx]['sheetContent'];
 
             if (oldColumnName !== newColumnName) {
                 Object.defineProperty(
-                    weekContentObj,
+                    sheetContentObj,
                     newColumnName,
-                    Object.getOwnPropertyDescriptor(weekContentObj, oldColumnName) as any,
+                    Object.getOwnPropertyDescriptor(sheetContentObj, oldColumnName) as any,
                 );
 
-                delete weekContentObj[oldColumnName];
+                delete sheetContentObj[oldColumnName];
             }
 
             targetTemplate.changed('templateEditingSurfaceBlocks', true);

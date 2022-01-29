@@ -637,7 +637,23 @@ exports.addEditingSurfaceSheet = handleAsyncError(async (req: any, res: Response
             });
 
             const { templateEditingSurfaceBlocks } = targetTemplate?.dataValues;
+            templateEditingSurfaceBlocks.push({
+                sheetId: `${uuid()}`,
+                sheetName: 'Untitled Sheet',
+                sheetOrder: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7'],
+                sheetContent: {
+                    'Day 1': [],
+                    'Day 2': [],
+                    'Day 3': [],
+                    'Day 4': [],
+                    'Day 5': [],
+                    'Day 6': [],
+                    'Day 7': [],
+                },
+            });
 
+            targetTemplate.changed('templateEditingSurfaceBlocks', true);
+            await targetTemplate.save();
             let updatedTemplate = await db.templateFile.findByPk(templateId);
 
             if (updatedTemplate) {

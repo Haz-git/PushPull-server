@@ -101,9 +101,11 @@ exports.addTemplate = handleAsyncError(async (req: any, res: Response, next: any
     const { templateDetails } = req.body;
 
     let templateBody = { ...templateDetails };
+    const { sheetId } = templateDetails;
     let currUser = await userfrontApi.get(`/v0/users/${userId}`);
 
     if (currUser && userId) {
+        delete templateBody.sheetId;
         templateBody.templateCreatedBy = {
             userfrontUserId: `${userId}`,
             username: currUser.data.username,
@@ -116,7 +118,7 @@ exports.addTemplate = handleAsyncError(async (req: any, res: Response, next: any
         templateBody.isPublished = false;
         templateBody.templateEditingSurfaceBlocks = [
             {
-                sheetId: `${uuid()}`,
+                sheetId: `${sheetId}`,
                 sheetName: 'Untitled Sheet',
                 sheetOrder: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7'],
                 sheetContent: {

@@ -58,6 +58,16 @@ router
     .post('/template/add', AuthController.authenticateJWT, templateController.addTemplate)
     .post('/template/toolbar/add/:templateId', AuthController.authenticateJWT, templateController.addToolbarBlocks)
     .post(
+        '/template/surface/add-sheet/:templateId',
+        AuthController.authenticateJWT,
+        templateController.addEditingSurfaceSheet,
+    )
+    .post(
+        '/template/surface/update-sheet/:templateId',
+        AuthController.authenticateJWT,
+        templateController.updateEditingSurfaceSheet,
+    )
+    .post(
         '/template/surface/rename-column/:templateId',
         AuthController.authenticateJWT,
         templateController.renameEditingSurfaceColumns,
@@ -73,6 +83,11 @@ router
         templateController.reorderEditingSurfaceColumns,
     )
     .put('/template/update/:templateId', AuthController.authenticateJWT, templateController.updateTemplate)
+    .delete(
+        '/template/surface/delete-sheet/:templateId',
+        AuthController.authenticateJWT,
+        templateController.deleteEditingSurfaceSheet,
+    )
     .delete('/template/delete/:templateId', AuthController.authenticateJWT, templateController.deleteTemplate)
     .delete(
         '/template/toolbar/delete/:templateId',

@@ -624,3 +624,114 @@ exports.renameEditingSurfaceColumns = handleAsyncError(async (req: any, res: Res
         msg: 'An error occurred--no credentials provided',
     });
 });
+
+exports.addEditingSurfaceSheet = handleAsyncError(async (req: any, res: Response, next: any) => {
+    const templateId = req.params.templateId;
+
+    if (templateId) {
+        try {
+            let targetTemplate = await db.templateFile.findOne({
+                where: {
+                    id: templateId,
+                },
+            });
+
+            const { templateEditingSurfaceBlocks } = targetTemplate?.dataValues;
+
+            let updatedTemplate = await db.templateFile.findByPk(templateId);
+
+            if (updatedTemplate) {
+                return res.status(200).json({
+                    status: 'Success',
+                    template: targetTemplate,
+                });
+            }
+        } catch (err) {
+            console.warn(err);
+            return res.status(500).json({
+                status: 'Failed',
+                msg: 'An error occurred retrieving user templates',
+            });
+        }
+    }
+
+    return res.status(500).json({
+        status: 'Failed',
+        msg: 'An error occurred--no credentials provided',
+    });
+});
+
+exports.updateEditingSurfaceSheet = handleAsyncError(async (req: any, res: Response, next: any) => {
+    const templateId = req.params.templateId;
+    const sheetId = req.query.sheetId;
+    // const updateObject = req.query;
+
+    if (templateId) {
+        try {
+            let targetTemplate = await db.templateFile.findOne({
+                where: {
+                    id: templateId,
+                },
+            });
+
+            const { templateEditingSurfaceBlocks } = targetTemplate?.dataValues;
+
+            let updatedTemplate = await db.templateFile.findByPk(templateId);
+
+            if (updatedTemplate) {
+                return res.status(200).json({
+                    status: 'Success',
+                    template: targetTemplate,
+                });
+            }
+        } catch (err) {
+            console.warn(err);
+            return res.status(500).json({
+                status: 'Failed',
+                msg: 'An error occurred retrieving user templates',
+            });
+        }
+    }
+
+    return res.status(500).json({
+        status: 'Failed',
+        msg: 'An error occurred--no credentials provided',
+    });
+});
+exports.deleteEditingSurfaceSheet = handleAsyncError(async (req: any, res: Response, next: any) => {
+    const templateId = req.params.templateId;
+    const sheetId = req.query.sheetId;
+    // const updateObject = req.query;
+
+    if (templateId) {
+        try {
+            let targetTemplate = await db.templateFile.findOne({
+                where: {
+                    id: templateId,
+                },
+            });
+
+            const { templateEditingSurfaceBlocks } = targetTemplate?.dataValues;
+
+            let updatedTemplate = await db.templateFile.findByPk(templateId);
+
+            if (updatedTemplate) {
+                return res.status(200).json({
+                    status: 'Success',
+                    template: targetTemplate,
+                });
+            }
+        } catch (err) {
+            console.warn(err);
+            return res.status(500).json({
+                status: 'Failed',
+                msg: 'An error occurred retrieving user templates',
+            });
+        }
+    }
+
+    return res.status(500).json({
+        status: 'Failed',
+        msg: 'An error occurred--no credentials provided',
+    });
+});

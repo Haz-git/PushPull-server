@@ -116,10 +116,10 @@ exports.addTemplate = handleAsyncError(async (req: any, res: Response, next: any
         templateBody.isPublished = false;
         templateBody.templateEditingSurfaceBlocks = [
             {
-                weekId: `${uuid()}`,
-                weekName: 'Untitled Week',
-                weekOrder: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7'],
-                weekContent: {
+                sheetId: `${uuid()}`,
+                sheetName: 'Untitled Week',
+                sheetOrder: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7'],
+                sheetContent: {
                     'Day 1': [],
                     'Day 2': [],
                     'Day 3': [],

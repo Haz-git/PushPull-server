@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 const { v4: uuid } = require('uuid');
+const { verifyUserForTemplateAccess } = require('../utils/verifyTemplateAccess');
 
 //USERFRONT API:
 const userfrontApi = require('../api/userfrontApi');
@@ -298,10 +299,23 @@ exports.deleteTemplate = handleAsyncError(async (req: any, res: Response, next: 
 //Template Building page requests:
 
 exports.queryTemplate = handleAsyncError(async (req: any, res: Response, next: any) => {
-    let templateId = req.params.templateId;
+    const templateId = req.params.templateId;
+    const { userId } = req.auth;
 
-    if (templateId) {
-        let targetTemplate = await db.templateFile.findByPk(templateId);
+    if (templateId && userId) {
+        const targetTemplate = await db.templateFile.findByPk(templateId);
+        if (
+            !verifyUserForTemplateAccess(
+                userId.toString(),
+                targetTemplate?.dataValues?.templateCreatedBy?.userfrontUserId,
+            )
+        ) {
+            return res.status(401).json({
+                status: 'Failed',
+                msg: 'Access Denied: User does not own template.',
+            });
+        }
+
         if (targetTemplate) {
             return res.status(200).json({
                 status: 'Success',

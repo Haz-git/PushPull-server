@@ -670,7 +670,7 @@ exports.addEditingSurfaceSheet = handleAsyncError(async (req: any, res: Response
 
             targetTemplate.changed('templateEditingSurfaceBlocks', true);
             await targetTemplate.save();
-            let updatedTemplate = await db.templateFile.findByPk(templateId);
+            const updatedTemplate = await db.templateFile.findByPk(templateId);
 
             if (updatedTemplate) {
                 return res.status(200).json({
@@ -708,7 +708,7 @@ exports.updateEditingSurfaceSheet = handleAsyncError(async (req: any, res: Respo
 
             const { templateEditingSurfaceBlocks } = targetTemplate?.dataValues;
 
-            let updatedTemplate = await db.templateFile.findByPk(templateId);
+            const updatedTemplate = await db.templateFile.findByPk(templateId);
 
             if (updatedTemplate) {
                 return res.status(200).json({
@@ -745,7 +745,16 @@ exports.deleteEditingSurfaceSheet = handleAsyncError(async (req: any, res: Respo
 
             const { templateEditingSurfaceBlocks } = targetTemplate?.dataValues;
 
-            let updatedTemplate = await db.templateFile.findByPk(templateId);
+            const expectedSheetDeletionIndex = templateEditingSurfaceBlocks.findIndex(
+                (sheet) => sheet.sheetId === sheetId,
+            );
+
+            templateEditingSurfaceBlocks.splice(expectedSheetDeletionIndex, 1);
+
+            targetTemplate.changed('templateEditingSurfaceBlocks', true);
+            await targetTemplate.save();
+
+            const updatedTemplate = await db.templateFile.findByPk(templateId);
 
             if (updatedTemplate) {
                 return res.status(200).json({

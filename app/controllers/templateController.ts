@@ -696,7 +696,7 @@ exports.addEditingSurfaceSheet = handleAsyncError(async (req: any, res: Response
 exports.updateEditingSurfaceSheet = handleAsyncError(async (req: any, res: Response, next: any) => {
     const templateId = req.params.templateId;
     const sheetId = req.query.sheetId;
-    // const updateObject = req.query;
+    const updateObject = req.body;
 
     if (templateId) {
         try {
@@ -706,7 +706,20 @@ exports.updateEditingSurfaceSheet = handleAsyncError(async (req: any, res: Respo
                 },
             });
 
-            const { templateEditingSurfaceBlocks } = targetTemplate?.dataValues;
+            let { templateEditingSurfaceBlocks } = targetTemplate?.dataValues;
+
+            const expectedSheetUpdateIndex = templateEditingSurfaceBlocks.findIndex(
+                (sheet) => sheet.sheetId === sheetId,
+            );
+
+            //iterate through updateObject, set current values to the updated values inside update object.
+
+            Object.keys(updateObject).forEach((key) => {
+                templateEditingSurfaceBlocks[expectedSheetUpdateIndex][key] = updateObject[key];
+            });
+
+            targetTemplate.changed('templateEditingSurfaceBlocks', true);
+            await targetTemplate.save();
 
             const updatedTemplate = await db.templateFile.findByPk(templateId);
 

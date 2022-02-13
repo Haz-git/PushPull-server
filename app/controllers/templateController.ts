@@ -434,9 +434,80 @@ exports.addEditingSurfaceBlocks = handleAsyncError(async (req: any, res: Respons
     });
 });
 
+exports.updateEditingSurfaceBlocks = handleAsyncError(async (req: any, res: Response, next: any) => {
+    //Handle adding blocks moved from toolbar to editing surface.
+    const { userId } = req.auth;
+    const { blockDetails } = req.body;
+    const { templateId } = req.params;
+    const { sheetId, blockId } = req.query;
+    let { columnPrefix } = req.query;
+
+    //Db stores columnPrefix with spaces. The column prefix sent into the server replaces all spaces with %20. We can't use decode URI here because we inserted a '%' prepending our secret. This gives a URI malformed.
+    const decodedColumnPrefix = columnPrefix.replace(/%20/g, ' ');
+
+    //req.query should contain sheetId and blockId.
+
+    if (userId && templateId && sheetId && blockId) {
+        try {
+            let targetTemplate = await db.templateFile.findOne({
+                where: {
+                    id: templateId,
+                },
+            });
+
+            const { templateEditingSurfaceBlocks } = targetTemplate?.dataValues;
+            const targetSheetIdx = templateEditingSurfaceBlocks.findIndex(
+                (weekObject) => weekObject.sheetId === sheetId,
+            );
+
+            if (targetSheetIdx !== -1) {
+                console.log(targetTemplate.dataValues.templateEditingSurfaceBlocks[targetSheetIdx].sheetContent);
+                const targetBlockIndex = targetTemplate.dataValues.templateEditingSurfaceBlocks[
+                    targetSheetIdx
+                ].sheetContent[decodedColumnPrefix].findIndex((block) => block.id === blockId);
+
+                targetTemplate.dataValues.templateEditingSurfaceBlocks[targetSheetIdx].sheetContent[
+                    decodedColumnPrefix
+                ][targetBlockIndex].blockDetails = blockDetails;
+
+                //According to: https://sequelize.org/master/manual/upgrade-to-v6.html, Deeply nested JSON property changes
+                //Will need .changed() to denote change...
+                targetTemplate.changed('templateEditingSurfaceBlocks', true);
+                await targetTemplate.save();
+
+                let updatedTemplate = await db.templateFile.findByPk(templateId);
+                if (updatedTemplate) {
+                    return res.status(200).json({
+                        status: 'Success',
+                        template: targetTemplate,
+                    });
+                }
+            } else {
+                return res.status(500).json({
+                    status: 'Failed',
+                    msg: 'An error occurred finding week id',
+                });
+            }
+        } catch (err) {
+            console.log(err);
+            return res.status(500).json({
+                status: 'Failed',
+                msg: 'An error occurred retrieving user templates',
+            });
+        }
+    }
+    return res.status(500).json({
+        status: 'Failed',
+        msg: 'An error occurred--no credentials provided',
+    });
+});
+
 exports.deleteEditingSurfaceBlocks = handleAsyncError(async (req: any, res: Response, next: any) => {
     let templateId = req.params.templateId;
-    const { sheetId, blockId, columnPrefix } = req.query;
+    const { sheetId, blockId } = req.query;
+    let { columnPrefix } = req.query;
+
+    const decodedColumnPrefix = columnPrefix.replace(/%20/g, ' ');
 
     if (templateId) {
         try {
@@ -454,11 +525,11 @@ exports.deleteEditingSurfaceBlocks = handleAsyncError(async (req: any, res: Resp
             if (targetSheetIdx !== -1) {
                 let targetColumn =
                     targetTemplate.dataValues.templateEditingSurfaceBlocks[targetSheetIdx]['sheetContent'][
-                        columnPrefix
+                        decodedColumnPrefix
                     ];
                 let deletionBlockIdx = targetColumn.findIndex((block) => block.id === blockId);
                 targetTemplate.dataValues.templateEditingSurfaceBlocks[targetSheetIdx]['sheetContent'][
-                    columnPrefix
+                    decodedColumnPrefix
                 ].splice(deletionBlockIdx, 1);
 
                 targetTemplate.changed('templateEditingSurfaceBlocks', true);

@@ -78,6 +78,11 @@ router
         templateController.addEditingSurfaceBlocks,
     )
     .post(
+        '/template/surface/update/:templateId',
+        AuthController.authenticateJWT,
+        templateController.updateEditingSurfaceBlocks,
+    )
+    .post(
         '/template/surface/reorder-column/:templateId',
         AuthController.authenticateJWT,
         templateController.reorderEditingSurfaceColumns,

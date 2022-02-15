@@ -58,6 +58,11 @@ router
     .post('/template/add', AuthController.authenticateJWT, templateController.addTemplate)
     .post('/template/toolbar/add/:templateId', AuthController.authenticateJWT, templateController.addToolbarBlocks)
     .post(
+        '/template/toolbar/update/:templateId',
+        AuthController.authenticateJWT,
+        templateController.updateToolbarBlocks,
+    )
+    .post(
         '/template/surface/add-sheet/:templateId',
         AuthController.authenticateJWT,
         templateController.addEditingSurfaceSheet,

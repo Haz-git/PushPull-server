@@ -383,9 +383,46 @@ exports.updateToolbarBlocks = handleAsyncError(async (req: any, res: Response, n
     const { userId } = req.auth;
     const { blockDetails } = req.body;
     const templateId = req.params.templateId;
-    const blockId = req.params.blockId;
+    const { blockId } = req.query;
 
-    console.log(templateId, blockId);
+    const isMissingRequiredArguments = !userId || !blockDetails || !templateId || !blockId;
+
+    if (!isMissingRequiredArguments) {
+        try {
+            let targetTemplate = await db.templateFile.findOne({
+                where: {
+                    id: templateId,
+                },
+            });
+
+            const { templateToolbarBlocks } = targetTemplate?.dataValues;
+            const targetBlockIndex = templateToolbarBlocks.findIndex((block) => block.id === blockId);
+
+            targetTemplate.dataValues.templateToolbarBlocks[targetBlockIndex].blockDetails = blockDetails;
+
+            targetTemplate.changed('templateToolbarBlocks', true);
+            await targetTemplate.save();
+
+            let updatedTemplate = await db.templateFile.findByPk(templateId);
+
+            if (updatedTemplate) {
+                return res.status(200).json({
+                    status: 'Success',
+                    template: targetTemplate,
+                });
+            }
+        } catch (err) {
+            console.log(err);
+            return res.status(500).json({
+                status: 'Failed',
+                msg: 'An error occurred retrieving user templates',
+            });
+        }
+    }
+    return res.status(500).json({
+        status: 'Failed',
+        msg: 'An error occurred--no credentials provided',
+    });
 });
 
 exports.addEditingSurfaceBlocks = handleAsyncError(async (req: any, res: Response, next: any) => {

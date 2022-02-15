@@ -379,6 +379,15 @@ exports.addToolbarBlocks = handleAsyncError(async (req: any, res: Response, next
     });
 });
 
+exports.updateToolbarBlocks = handleAsyncError(async (req: any, res: Response, next: any) => {
+    const { userId } = req.auth;
+    const { blockDetails } = req.body;
+    const templateId = req.params.templateId;
+    const blockId = req.params.blockId;
+
+    console.log(templateId, blockId);
+});
+
 exports.addEditingSurfaceBlocks = handleAsyncError(async (req: any, res: Response, next: any) => {
     //Handle adding blocks moved from toolbar to editing surface.
     const { userId } = req.auth;

@@ -110,4 +110,12 @@ router
         templateController.deleteEditingSurfaceBlocks,
     );
 
+//View template routes. View templates are essentially saved versions of templates that the author can write/read to, whereas others may only read.
+
+router
+    .get('/viewTemplate/:viewTemplateId', AuthController.authenticateJWT)
+    .post('/viewTemplate/add/:viewTemplateId', AuthController.authenticateJWT)
+    .put('/viewTemplate/update/:viewTemplateId', AuthController.authenticateJWT)
+    .delete('/viewTemplate/delete/:viewTemplateId', AuthController.authenticateJWT);
+
 module.exports = router;

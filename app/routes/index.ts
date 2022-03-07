@@ -10,6 +10,7 @@ const reviewController = require('../controllers/reviewController');
 const profileController = require('../controllers/profileController');
 const projectController = require('../controllers/projectController');
 const templateController = require('../controllers/templateController');
+const viewTemplateController = require('../controllers/viewTemplateController');
 
 //Authentication Routes:
 router.get('/user/details', AuthController.authenticateJWT);
@@ -113,9 +114,17 @@ router
 //View template routes. View templates are essentially saved versions of templates that the author can write/read to, whereas others may only read.
 
 router
-    .get('/viewTemplate/:viewTemplateId', AuthController.authenticateJWT)
-    .post('/viewTemplate/add/:viewTemplateId', AuthController.authenticateJWT)
-    .put('/viewTemplate/update/:viewTemplateId', AuthController.authenticateJWT)
-    .delete('/viewTemplate/delete/:viewTemplateId', AuthController.authenticateJWT);
+    .get('/viewTemplate/:viewTemplateId', AuthController.authenticateJWT.viewTemplateController.findViewTemplate)
+    .post('/viewTemplate/add/:viewTemplateId', AuthController.authenticateJWT, viewTemplateController.addViewTemplate)
+    .put(
+        '/viewTemplate/update/:viewTemplateId',
+        AuthController.authenticateJWT,
+        viewTemplateController.updateViewTemplate,
+    )
+    .delete(
+        '/viewTemplate/delete/:viewTemplateId',
+        AuthController.authenticateJWT,
+        viewTemplateController.deleteViewTemplate,
+    );
 
 module.exports = router;

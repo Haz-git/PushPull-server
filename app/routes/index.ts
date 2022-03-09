@@ -115,7 +115,7 @@ router
 
 router
     .get('/viewTemplate/:viewTemplateId', AuthController.authenticateJWT, viewTemplateController.findViewTemplate)
-    .post('/viewTemplate/add/:viewTemplateId', AuthController.authenticateJWT, viewTemplateController.addViewTemplate)
+    .post('/viewTemplate/add', AuthController.authenticateJWT, viewTemplateController.addViewTemplate)
     .put(
         '/viewTemplate/update/:viewTemplateId',
         AuthController.authenticateJWT,

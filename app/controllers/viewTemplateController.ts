@@ -13,11 +13,19 @@ const db = require('../models');
 const { Op } = require('sequelize');
 
 exports.findViewTemplate = handleAsyncError(async (req: any, res: Response, next: any) => {
-    const viewTemplateId = req.params.viewTemplateId;
+    const templateId = req.params.templateId;
 
     //I'm leaning towards everyone being able to access viewTemplates. TODO: Make viewTemplates accessable even without creating an account.
 
-    const targetViewTemplate = await db.viewTemplate.findByPk(viewTemplateId);
+    // This finds the view template by its ID
+    // const targetViewTemplate = await db.viewTemplate.findByPk(viewTemplateId);
+
+    // Find viewTemplate via templateFileId
+    const targetViewTemplate = await db.viewTemplate.findOne({
+        where: {
+            templateFileId: templateId,
+        },
+    });
 
     if (!targetViewTemplate) {
         return res.status(404).json({

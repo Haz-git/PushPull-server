@@ -97,7 +97,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
                 allowNull: false,
             },
             savedViewTemplateId: {
-                type: DataTypes.BOOLEAN,
+                type: DataTypes.STRING,
                 allowNull: true,
             },
         },

@@ -16,6 +16,8 @@ interface templateFileAttributes {
     templateEditingSurfaceBlocks: any;
     isPublished: boolean;
     isDraft: boolean;
+    hasSavedViewTemplate: boolean; //viewTemplates are what others can see.
+    savedViewTemplateId: string;
 }
 
 module.exports = (sequelize: any, DataTypes: any) => {
@@ -33,6 +35,8 @@ module.exports = (sequelize: any, DataTypes: any) => {
         public templateEditingSurfaceBlocks: any;
         public isPublished!: boolean;
         public isDraft!: boolean;
+        public hasSavedViewTemplate!: boolean;
+        public savedViewTemplateId!: string;
         static associate(models: any) {
             templateFile.belongsTo(models.project);
         }
@@ -87,6 +91,14 @@ module.exports = (sequelize: any, DataTypes: any) => {
             isPublished: {
                 type: DataTypes.BOOLEAN,
                 allowNull: false,
+            },
+            hasSavedViewTemplate: {
+                type: DataTypes.BOOLEAN,
+                allowNull: false,
+            },
+            savedViewTemplateId: {
+                type: DataTypes.BOOLEAN,
+                allowNull: true,
             },
         },
         { sequelize, modelName: 'templateFile' },

@@ -117,6 +117,7 @@ exports.addTemplate = handleAsyncError(async (req: any, res: Response, next: any
         templateBody.createdAt = new Date();
         templateBody.isDraft = true;
         templateBody.isPublished = false;
+        templateBody.hasSavedViewTemplate = false;
         templateBody.templateEditingSurfaceBlocks = [
             {
                 sheetId: `${sheetId}`,

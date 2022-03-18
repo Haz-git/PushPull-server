@@ -75,6 +75,49 @@ exports.addViewTemplate = handleAsyncError(async (req: any, res: Response, next:
     });
 });
 
-exports.updateViewTemplate = handleAsyncError(async (req: any, res: Response, next: any) => {});
+exports.updateViewTemplate = handleAsyncError(async (req: any, res: Response, next: any) => {
+    const viewTemplateId = req.params.viewTemplateId;
+    const { updatedTemplate } = req.body;
+    const { userId } = req.auth;
+
+    const doesUserOwnTemplate = verifyUserForTemplateAccess(
+        userId.toString(),
+        updatedTemplate.templateCreatedBy.userfrontUserId,
+    );
+
+    if (!updatedTemplate || !userId || !doesUserOwnTemplate) {
+        return res.status(401).json({
+            status: 'Failed',
+            msg: 'Access Denied: User submitting view template does not own template',
+        });
+    }
+
+    try {
+        const targetViewTemplate = await db.viewTemplate.findByPk(viewTemplateId);
+
+        targetViewTemplate.dataValues.savedTemplate = updatedTemplate;
+        targetViewTemplate.changed('savedTemplate', true);
+        await targetViewTemplate.save();
+
+        const updatedViewTemplate = await db.viewTemplate.findByPk(viewTemplateId);
+
+        if (updatedViewTemplate) {
+            return res.status(200).json({
+                status: 'Success',
+                viewTemplate: updatedViewTemplate,
+            });
+        }
+    } catch (err) {
+        return res.status(500).json({
+            status: 'Failed',
+            msg: 'An error occurred updating view template',
+        });
+    }
+
+    return res.status(500).json({
+        status: 'Failed',
+        msg: 'An error occurred updating view template--no credentials',
+    });
+});
 
 exports.deleteViewTemplate = handleAsyncError(async (req: any, res: Response, next: any) => {});

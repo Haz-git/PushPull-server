@@ -248,6 +248,14 @@ exports.deleteTemplate = handleAsyncError(async (req: any, res: Response, next: 
                 },
             });
 
+            if (targetTemplate.hasSavedViewTemplate && targetTemplate.savedViewTemplateId !== '') {
+                //When we delete the template, we must also delete the viewTemplate that others can view as well.
+
+                const viewTemplate = await db.viewTemplate.findByPk(targetTemplate.savedViewTemplateId);
+
+                await viewTemplate.destroy();
+            }
+
             await targetTemplate.destroy();
 
             let totalTemplates;
@@ -264,6 +272,7 @@ exports.deleteTemplate = handleAsyncError(async (req: any, res: Response, next: 
                     order: ['createdAt'],
                 });
             } else {
+                //If there's a projectId, we're returning an array of templates to the project dashboard.
                 totalTemplates = await db.templateFile.findAll({
                     where: {
                         templateCreatedBy: {

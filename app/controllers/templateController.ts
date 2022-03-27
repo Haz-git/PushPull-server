@@ -167,7 +167,7 @@ exports.addTemplate = handleAsyncError(async (req: any, res: Response, next: any
 
 exports.updateTemplate = handleAsyncError(async (req: any, res: Response, next: any) => {
     const { userId } = req.auth;
-    const { templateDetails, projectUuid } = req.body;
+    const { templateDetails, isInTemplateBuilderMode, isInProjectDashboard } = req.body;
     let templateId = req.params.templateId;
 
     let newTemplateDetails = { ...templateDetails };
@@ -187,7 +187,8 @@ exports.updateTemplate = handleAsyncError(async (req: any, res: Response, next: 
             await targetTemplate.save();
             let totalTemplates;
 
-            if (!projectUuid) {
+            if (isInProjectDashboard && !isInTemplateBuilderMode) {
+                //If no project uuid, then this update is from the project dashboard view.
                 totalTemplates = await db.templateFile.findAll({
                     where: {
                         templateCreatedBy: {
@@ -199,27 +200,33 @@ exports.updateTemplate = handleAsyncError(async (req: any, res: Response, next: 
                     },
                     order: ['createdAt'],
                 });
+
+                if (totalTemplates) {
+                    return res.status(200).json({
+                        status: 'Success',
+                        templates: totalTemplates,
+                    });
+                }
             } else {
-                totalTemplates = await db.templateFile.findAll({
+                //If there's a project uuid, the update request is from within the template builder dashboard. I really really need to clean this up.
+                const updatedTemplate = await db.templateFile.findOne({
                     where: {
-                        templateCreatedBy: {
-                            [Op.contains]: {
-                                username: `${currUser.data.username}`,
-                                userfrontUserId: `${userId}`,
-                            },
-                        },
-                        projectId: `${projectUuid}`,
+                        id: templateId,
                     },
-                    order: ['createdAt'],
                 });
+
+                if (updatedTemplate) {
+                    return res.status(200).json({
+                        status: 'Success',
+                        template: updatedTemplate,
+                    });
+                }
             }
 
-            if (totalTemplates) {
-                return res.status(200).json({
-                    status: 'Success',
-                    templates: totalTemplates,
-                });
-            }
+            return res.status(500).json({
+                status: 'Failed',
+                msg: 'An error occurred processing your update request',
+            });
         } catch (err) {
             return res.status(500).json({
                 status: 'Failed',

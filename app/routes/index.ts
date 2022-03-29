@@ -4,6 +4,7 @@ const router = express.Router();
 
 //Controllers:
 const AuthController = require('../controllers/authController');
+const userController = require('../controllers/userController');
 const categoryController = require('../controllers/categoryController');
 const workoutProgramController = require('../controllers/workoutProgramController');
 const reviewController = require('../controllers/reviewController');
@@ -13,7 +14,7 @@ const templateController = require('../controllers/templateController');
 const viewTemplateController = require('../controllers/viewTemplateController');
 
 //Authentication Routes:
-router.get('/user/details', AuthController.authenticateJWT);
+router.get('/user/details', AuthController.authenticateJWT, userController.getUser);
 
 router
     .get('/categories/all', categoryController.getAll)

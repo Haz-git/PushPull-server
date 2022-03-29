@@ -10,7 +10,7 @@ exports.getUser = handleAsyncError(async (req: any, res: Response, next: any) =>
 
     try {
         const response = await userfrontApi.get(`/v0/users/${userId}`);
-        console.log(response);
+        // console.log(response);
 
         return res.status(200).json({
             status: 'Success',

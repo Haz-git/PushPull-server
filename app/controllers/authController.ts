@@ -17,7 +17,10 @@ exports.authenticateJWT = handleAsyncError(async (req: any, res: Response, next:
 
     //Verify JWT with Userfront public key
     jwt.verify(token, PUBLIC_KEY, { algorithms: ['RS256'] }, (err: any, auth: any) => {
-        if (err) return res.sendStatus(403); // Return 403 if there is an error verifying
+        if (err)
+            return res.status(403).json({
+                status: 'Unauthorized, invalid credentials or session expired',
+            }); // Return 403 if there is an error verifying
 
         req.auth = auth; //auth doesn't exist on Request type from 'express'.
         next();

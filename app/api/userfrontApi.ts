@@ -12,8 +12,9 @@ const axiosInstance = axios.create({
     baseURL: 'https://api.userfront.com',
     withCredentials: true,
     headers: {
+        Accept: '*/*',
         'Content-Type': 'application/json',
-        authorization: `Bearer ${API_KEY}`,
+        Authorization: `Bearer ${API_KEY}`,
     },
 });
 

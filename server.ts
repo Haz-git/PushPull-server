@@ -1,10 +1,11 @@
 export {};
+//Dotenv
+require('dotenv').config();
 
 //Express:
 const express = require('express');
 //Router:
 const router = require('./app/routes/index');
-require('dotenv').config();
 
 //Security Dependencies:
 const cors = require('cors');

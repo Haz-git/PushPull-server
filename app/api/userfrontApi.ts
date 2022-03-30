@@ -3,8 +3,6 @@ const axios = require('axios');
 let API_KEY;
 
 if (process.env.NODE_ENV === 'development') {
-    //Why does this not work in dev??
-
     API_KEY = process.env.USERFRONT_TEST_API_KEY;
 }
 

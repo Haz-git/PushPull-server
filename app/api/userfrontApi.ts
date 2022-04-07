@@ -10,7 +10,6 @@ if (process.env.NODE_ENV === 'production') {
     API_KEY = process.env.USERFRONT_LIVE_API_KEY;
 }
 
-console.log(API_KEY);
 const axiosInstance = axios.create({
     baseURL: 'https://api.userfront.com',
     withCredentials: true,

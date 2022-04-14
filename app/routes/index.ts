@@ -115,7 +115,7 @@ router
 //View template routes. View templates are essentially saved versions of templates that the author can write/read to, whereas others may only read.
 
 router
-    .get('/viewTemplate/:templateId', AuthController.authenticateJWT, viewTemplateController.findViewTemplate)
+    .get('/viewTemplate/:templateId', viewTemplateController.findViewTemplate)
     .post('/viewTemplate/add', AuthController.authenticateJWT, viewTemplateController.addViewTemplate)
     .put(
         '/viewTemplate/update/:viewTemplateId',
